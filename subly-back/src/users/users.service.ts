@@ -10,10 +10,9 @@ export class UsersService {
     private usersRepository: Repository<Users>,
   ) {}
 
-  create(firstName: string, lastName: string, email: string, password: string) {
+  create(username: string, email: string, password: string) {
     const users = this.usersRepository.create({
-      firstName,
-      lastName,
+      username,
       email,
       password,
     });
@@ -22,5 +21,14 @@ export class UsersService {
 
   findAll() {
     return this.usersRepository.find();
+  }
+
+  async findOne(username: string): Promise<Users | null> {
+    const user = await this.usersRepository.findOne({ where: { username } });
+    return user;
+  }
+
+  async findOneByMail(email: string): Promise<Users | null> {
+    return this.usersRepository.findOne({ where: { email } });
   }
 }
