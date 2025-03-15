@@ -8,7 +8,12 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Body() signInDto: LoginDto) {
-    return this.authService.signIn(signInDto.username, signInDto.password);
+  async login(@Body() signInDto: LoginDto) {
+    return this.authService.login(signInDto.username, signInDto.password);
   }
+
+  // @Post('oauth/apple')
+  // async appleLogin(@Body('token') token: string) {
+  //   return this.authService.loginWithApple(token);
+  // }
 }

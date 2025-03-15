@@ -10,7 +10,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(
+  async login(
     username: string,
     pass: string,
   ): Promise<{ access_token: string }> {
@@ -18,7 +18,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }
-    const isPasswordValid = await bcrypt.compare(pass, user.password);
+    const isPasswordValid = await bcrypt.compare(pass, user.password as string);
     console.log('pass', pass);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Mot de passe incorrect');

@@ -1,57 +1,61 @@
 import { Alert, Button, SafeAreaView, Text, View } from 'react-native';
 import Input from '../Input';
 import { useState } from 'react';
-import { fetchUser } from '@/services/userService';
 import { useRouter } from 'expo-router';
+import { loginUser } from '@/services/authService';
 
 const Signin = () => {
+  const router = useRouter();
 
-  const router = useRouter()
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+  const inputData = [
+    { placeholder: 'username', value: username, onChangeText: setUsername },
+    { placeholder: 'Mot de passe', value: password, onChangeText: setPassword },
+  ];
 
-    const inputData = [
-        { placeholder: "Email", value: email, onChangeText: setEmail },
-        { placeholder: "Mot de passe", value: password, onChangeText: setPassword },
-      ];
-
-  const handleSignin = async () => {
-    if (!email || !password) {
-      Alert.alert("Erreur", "Tous les champs sont obligatoires.");
+  const handleLogin = async () => {
+    if (!username || !password) {
+      Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
       return;
     }
 
     try {
       const userData = {
-        email,
+        username,
         password,
       };
-
-      await fetchUser(userData);
-      Alert.alert("Succès", "Compte créé avec succès !");
-      router.push("/");
+      console.log('userData', userData);
+      await loginUser(userData);
+      Alert.alert('Succès', 'Compte créé avec succès !');
+      router.replace('/');
     } catch (error) {
-      Alert.alert("Erreur", "Impossible de créer le compte.");
+      Alert.alert('Erreur', 'Impossible de se connecter.');
     }
   };
 
-  const handleRedirectSignIn = () => {
-    router.push("/signup")
-  }
+  const handleRedirectSignUp = () => {
+    router.replace('/signup');
+  };
 
   return (
     <SafeAreaView>
-        <Text className="text-xl font-bold text-red-600">Connexion</Text>
+      <Text className="text-xl font-bold text-red-600">Connexion</Text>
       <View className="p-2 gap-3">
         {inputData.map((input, index) => (
-          <Input placeholder={input.placeholder} key={index} onChangeText={input.onChangeText} value={input.value}/>
+          <Input
+            placeholder={input.placeholder}
+            key={index}
+            onChangeText={input.onChangeText}
+            value={input.value}
+          />
         ))}
       </View>
-      <Button title="Se connecter" onPress={handleSignin} />
-      <Button title="pas encore inscrit ?" onPress={handleRedirectSignIn} />
+      <Button title="Se connecter" onPress={handleLogin} />
+      <Button title="pas encore inscrit ?" onPress={handleRedirectSignUp} />
     </SafeAreaView>
   );
-}
+};
 
-export default Signin
+export default Signin;
