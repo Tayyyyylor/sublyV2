@@ -1,5 +1,4 @@
 import { SafeAreaView, Text } from 'react-native';
-import AppleButton from './auth/AppleButton';
 
 const Dashboard = () => {
   return (

@@ -3,9 +3,11 @@ import Input from '../Input';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { loginUser } from '@/services/authService';
+import { useAuth } from '@/context/useAuth';
 
 const Signin = () => {
   const router = useRouter();
+  const { signIn } = useAuth()
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -26,10 +28,9 @@ const Signin = () => {
         username,
         password,
       };
-      console.log('userData', userData);
-      await loginUser(userData);
+      await loginUser(userData, signIn);
       Alert.alert('Succès', 'Compte créé avec succès !');
-      router.replace('/');
+      router.replace('/(tabs)');
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de se connecter.');
     }

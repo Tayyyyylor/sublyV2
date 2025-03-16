@@ -1,4 +1,4 @@
-import { useContext, createContext, type PropsWithChildren } from 'react';
+import { useContext, createContext, type PropsWithChildren, useEffect } from 'react';
 import { useStorageState } from '../hooks/useStorageState';
 
 const AuthContext = createContext<{
@@ -14,7 +14,7 @@ const AuthContext = createContext<{
 });
 
 // This hook can be used to access the user info.
-export function useSession() {
+export function useAuth() {
   const value = useContext(AuthContext);
   if (process.env.NODE_ENV !== 'production') {
     if (!value) {
@@ -27,6 +27,10 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
+
+  useEffect(() => {
+    console.log("Session chargée :", session); // 🔍 Debug pour voir si session est bien chargée
+  }, [session]);
 
   return (
     <AuthContext.Provider

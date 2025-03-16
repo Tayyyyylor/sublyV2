@@ -32,6 +32,7 @@ const Signup = () => {
 
       await registerUser(userData);
       Alert.alert('Succès', 'Compte créé avec succès !');
+      router.push('/');
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de créer le compte.');
     }

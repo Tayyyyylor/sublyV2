@@ -1,5 +1,7 @@
+import { useAuth } from '@/context/useAuth';
 import axiosInstance from '../helpers/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 interface User {
   username: string;
@@ -20,14 +22,13 @@ export const registerUser = async (userData: User) => {
   }
 };
 
-export const loginUser = async (userData: User) => {
+export const loginUser = async (userData: User, signIn: (token: string) => void) => {
   try {
     const response = await axiosInstance.post('/auth/login', userData);
     const token = response.data.access_token;
-
-    // Stocker le token localement
-    await AsyncStorage.setItem('authToken', token);
-    return token;
+    if (!token) throw new Error("Token manquant dans la réponse API");
+    signIn(token);
+    router.replace('/(tabs)');
   } catch (error: any) {
     console.error(
       'Erreur de connexion :',
@@ -37,13 +38,3 @@ export const loginUser = async (userData: User) => {
   }
 };
 
-// 🔹 Vérifier si un utilisateur est connecté
-export const getAuthToken = async () => {
-  const token = await AsyncStorage.getItem('authToken');
-  return token && token !== 'null' && token !== 'undefined' ? token : null;
-};
-
-// 🔹 Déconnexion de l'utilisateur
-export const logoutUser = async () => {
-  await AsyncStorage.removeItem('authToken');
-};
