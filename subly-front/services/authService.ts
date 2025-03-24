@@ -22,11 +22,14 @@ export const registerUser = async (userData: User) => {
   }
 };
 
-export const loginUser = async (userData: User, signIn: (token: string) => void) => {
+export const loginUser = async (
+  userData: User,
+  signIn: (token: string) => void,
+) => {
   try {
     const response = await axiosInstance.post('/auth/login', userData);
     const token = response.data.access_token;
-    if (!token) throw new Error("Token manquant dans la réponse API");
+    if (!token) throw new Error('Token manquant dans la réponse API');
     signIn(token);
     router.replace('/(tabs)');
   } catch (error: any) {
@@ -37,4 +40,3 @@ export const loginUser = async (userData: User, signIn: (token: string) => void)
     throw error;
   }
 };
-

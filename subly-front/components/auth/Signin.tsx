@@ -7,7 +7,7 @@ import { useAuth } from '@/context/useAuth';
 
 const Signin = () => {
   const router = useRouter();
-  const { signIn } = useAuth()
+  const { signIn } = useAuth();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

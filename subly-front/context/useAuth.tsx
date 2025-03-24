@@ -1,15 +1,28 @@
-import { useContext, createContext, type PropsWithChildren, useEffect } from 'react';
+import {
+  useContext,
+  createContext,
+  type PropsWithChildren,
+  useMemo,
+} from 'react';
 import { useStorageState } from '../hooks/useStorageState';
+import { jwtDecode } from 'jwt-decode';
+
+interface UserData {
+  username: string;
+  id: string;
+}
 
 const AuthContext = createContext<{
-  signIn: (token: string) => void;
+  signIn: (token: string, username: string) => void;
   signOut: () => void;
   session?: string | null;
+  user?: UserData | null;
   isLoading: boolean;
 }>({
   signIn: () => null,
   signOut: () => null,
   session: null,
+  user: null,
   isLoading: false,
 });
 
@@ -28,20 +41,30 @@ export function useAuth() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
 
-  useEffect(() => {
-    console.log("Session chargée :", session); // 🔍 Debug pour voir si session est bien chargée
+  const user = useMemo(() => {
+    if (!session) return null;
+    try {
+      const decoded = jwtDecode<{ username: string; sub: string }>(session);
+      return { username: decoded.username, id: decoded.sub };
+    } catch (error) {
+      console.error('Erreur de décodage du JWT:', error);
+      return null;
+    }
   }, [session]);
+
+  console.log('user', user);
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: (token: string) => {
+        signIn: (token: string, username: string) => {
           setSession(token);
         },
         signOut: () => {
           setSession(null);
         },
         session,
+        user,
         isLoading,
       }}
     >

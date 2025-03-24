@@ -1,7 +1,7 @@
 import { Redirect, Tabs } from 'expo-router';
 import { View, ActivityIndicator } from 'react-native';
 import { useAuth } from '@/context/useAuth';
-import "../../global.css"
+import '../../global.css';
 
 export default function TabLayout() {
   const { session, isLoading } = useAuth();
@@ -19,9 +19,9 @@ export default function TabLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' , headerShown: false}} >
-      <Tabs.Screen name="index" options={{ title: "Dashboard" }} />
-      <Tabs.Screen name="settings" options={{ title: "Settings" }} />
+    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue', headerShown: false }}>
+      <Tabs.Screen name="index" options={{ title: 'Dashboard' }} />
+      <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
     </Tabs>
   );
 }
