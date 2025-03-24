@@ -4,13 +4,17 @@ import { SafeAreaView, Text } from 'react-native';
 const Dashboard = () => {
   const { user } = useAuth();
 
-  console.log('user', user);
-
   return (
-    <SafeAreaView>
-      <Text className="text-blue-700 text-[40px]">
-        Bienvenue {user?.username} sur le dashboard{' '}
+    <SafeAreaView className=''>
+      <Text>Date</Text>
+      <Text className="text-blue-700 text-[30px] text-center">
+        Hello {user?.username} ! Bienvenue !
       </Text>
+      <Text>Dépense prévue ce jour : X €</Text>
+      <Text>Solde fin du mois : </Text>
+      <Text>Calendar</Text>
+      <Text>Liste des dépenses de la journées</Text>
+
     </SafeAreaView>
   );
 };
