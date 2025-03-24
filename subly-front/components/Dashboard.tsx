@@ -1,33 +1,22 @@
-import { getAuthToken } from '@/services/userService';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react'
-import { ActivityIndicator, SafeAreaView, Text, View } from 'react-native'
+import { useAuth } from '@/context/useAuth';
+import { SafeAreaView, Text } from 'react-native';
 
 const Dashboard = () => {
+  const { user } = useAuth();
 
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = await getAuthToken();
-      if (!token) {
-        router.replace("/signin"); // Rediriger si pas connecté
-      }
-      setLoading(false);
-    };
-
-    checkAuth();
-  }, []);
-
-  if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
   return (
-    <SafeAreaView>
-        <Text className='text-blue-700'>Bienvenue sur le dashboard</Text>
-    </SafeAreaView>
-  )
-}
+    <SafeAreaView className=''>
+      <Text>Date</Text>
+      <Text className="text-blue-700 text-[30px] text-center">
+        Hello {user?.username} ! Bienvenue !
+      </Text>
+      <Text>Dépense prévue ce jour : X €</Text>
+      <Text>Solde fin du mois : </Text>
+      <Text>Calendar</Text>
+      <Text>Liste des dépenses de la journées</Text>
 
-export default Dashboard
+    </SafeAreaView>
+  );
+};
+
+export default Dashboard;
