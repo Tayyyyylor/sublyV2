@@ -13,7 +13,7 @@ interface UserData {
 }
 
 const AuthContext = createContext<{
-  signIn: (token: string, username: string) => void;
+  signIn: (token: string) => void;
   signOut: () => void;
   session?: string | null;
   user?: UserData | null;
@@ -57,7 +57,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
   return (
     <AuthContext.Provider
       value={{
-        signIn: (token: string, username: string) => {
+        signIn: (token: string) => {
           setSession(token);
         },
         signOut: () => {

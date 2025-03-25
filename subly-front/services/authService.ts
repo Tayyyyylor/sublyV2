@@ -40,3 +40,12 @@ export const loginUser = async (
     throw error;
   }
 };
+
+export const logoutUser = async (signOut: () => void) => {
+  try {
+    signOut();
+    router.replace('/signin');
+  } catch (error) {
+    console.error('Erreur lors de la déconnexion :', error);
+  }
+};
