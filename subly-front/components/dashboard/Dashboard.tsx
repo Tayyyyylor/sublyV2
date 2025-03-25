@@ -2,11 +2,21 @@ import { useAuth } from '@/context/useAuth';
 import { SafeAreaView, Text, View } from 'react-native';
 import { format } from 'date-fns';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { useState } from 'react';
+import ButtonAdd from '../ButtonAdd';
 
 const Dashboard = () => {
   const { user } = useAuth();
 
   const date = format(new Date(), 'dd/MM/yyyy');
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split('T')[0],
+  );
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
 
   LocaleConfig.locales['fr'] = {
     monthNames: [
@@ -52,7 +62,7 @@ const Dashboard = () => {
   LocaleConfig.defaultLocale = 'fr';
 
   return (
-    <SafeAreaView className="">
+    <SafeAreaView className="relative">
       <Text className="font-bold pl-3 mb-[10px]">{date}</Text>
       <Text className="text-blue-700 text-[30px] text-center font-bold">
         Hello {user?.username} ! Bienvenue !
@@ -71,9 +81,18 @@ const Dashboard = () => {
             todayTextColor: 'red',
             selectedDayBackgroundColor: 'red',
           }}
+          onDayPress={(day: any) => {
+            setSelectedDate(day.dateString);
+            console.log('Jour sélectionné :', day.dateString);
+          }}
+          markedDates={{
+            [selectedDate]: { selected: true, selectedColor: 'blue' },
+          }}
         />
       </View>
-      <Text className="">Liste des dépenses de la journée</Text>
+      <Text>Liste des dépenses de la journée</Text>
+      <ButtonAdd openModal={openModal} />
+      {isOpen && <Text>Salut toi</Text>}
     </SafeAreaView>
   );
 };
