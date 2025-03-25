@@ -1,5 +1,5 @@
-import Signin from '@/components/auth/Signin';
+import Settings from '@/components/Settings';
 
 export default function SettingsScreen() {
-  return <Signin />;
+  return <Settings />;
 }
