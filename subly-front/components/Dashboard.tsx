@@ -1,13 +1,12 @@
 import { useAuth } from '@/context/useAuth';
 import { SafeAreaView, Text, View } from 'react-native';
 import { format } from 'date-fns';
-import { Calendar, LocaleConfig } from "react-native-calendars"
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 const Dashboard = () => {
   const { user } = useAuth();
 
   const date = format(new Date(), 'dd/MM/yyyy');
-
 
   LocaleConfig.locales['fr'] = {
     monthNames: [
@@ -22,12 +21,33 @@ const Dashboard = () => {
       'Septembre',
       'Octobre',
       'Novembre',
-      'Décembre'
+      'Décembre',
     ],
-    monthNamesShort: ['Janv.', 'Févr.', 'Mars', 'Avril', 'Mai', 'Juin', 'Juil.', 'Août', 'Sept.', 'Oct.', 'Nov.', 'Déc.'],
-    dayNames: ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'],
+    monthNamesShort: [
+      'Janv.',
+      'Févr.',
+      'Mars',
+      'Avril',
+      'Mai',
+      'Juin',
+      'Juil.',
+      'Août',
+      'Sept.',
+      'Oct.',
+      'Nov.',
+      'Déc.',
+    ],
+    dayNames: [
+      'Dimanche',
+      'Lundi',
+      'Mardi',
+      'Mercredi',
+      'Jeudi',
+      'Vendredi',
+      'Samedi',
+    ],
     dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-    today: "Aujourd'hui"
+    today: "Aujourd'hui",
   };
   LocaleConfig.defaultLocale = 'fr';
 
@@ -44,12 +64,14 @@ const Dashboard = () => {
         Solde fin du mois : 12€
       </Text>
       <View className="p-[10px]">
-        <Calendar  theme={{
+        <Calendar
+          theme={{
             textDayFontFamily: 'Inter-Medium',
             textMonthFontFamily: 'Inter-Bold',
-            todayTextColor: 'red', 
-            selectedDayBackgroundColor: 'red'
-          }} />
+            todayTextColor: 'red',
+            selectedDayBackgroundColor: 'red',
+          }}
+        />
       </View>
       <Text className="">Liste des dépenses de la journée</Text>
     </SafeAreaView>

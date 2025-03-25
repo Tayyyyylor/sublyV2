@@ -3,13 +3,13 @@ import { create } from 'zustand';
 
 interface Transaction {
   id: string;
-  name: string
+  name: string;
   startDate: Date; // format 'DD-MM-YYYY' default date du jour ou jour selected
   amount: number;
   category: string; // default streaming + faire liste de catégories
-  frequency: string // default mensuel + faire liste des options dispo
-  endDate?: Date
-  logo?: string // via api logo ( logo.dev )
+  frequency: string; // default mensuel + faire liste des options dispo
+  endDate?: Date;
+  logo?: string; // via api logo ( logo.dev )
 }
 
 interface TransactionStore {
