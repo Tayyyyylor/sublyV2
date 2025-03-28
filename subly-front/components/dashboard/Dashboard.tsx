@@ -13,15 +13,15 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0],
   );
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false)
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
   const openModal = () => {
-    setIsOverlayVisible(true)
-  }
+    setIsOverlayVisible(true);
+  };
 
   const closeModal = () => {
-    setIsOverlayVisible(false)
-  }
+    setIsOverlayVisible(false);
+  };
 
   LocaleConfig.locales['fr'] = {
     monthNames: [
@@ -97,7 +97,7 @@ const Dashboard = () => {
       </View>
       <Text>Liste des dépenses de la journée</Text>
       <ButtonAdd openModal={openModal} />
- <EventOverlay isVisible={isOverlayVisible} onClose={closeModal}/>
+      <EventOverlay isVisible={isOverlayVisible} onClose={closeModal} />
     </SafeAreaView>
   );
 };
