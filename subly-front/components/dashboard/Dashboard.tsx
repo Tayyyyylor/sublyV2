@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useState } from 'react';
 import ButtonAdd from '../ButtonAdd';
+import EventOverlay from './EventOverlay';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -12,11 +13,15 @@ const Dashboard = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0],
   );
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false)
 
   const openModal = () => {
-    setIsOpen(true);
-  };
+    setIsOverlayVisible(true)
+  }
+
+  const closeModal = () => {
+    setIsOverlayVisible(false)
+  }
 
   LocaleConfig.locales['fr'] = {
     monthNames: [
@@ -92,7 +97,7 @@ const Dashboard = () => {
       </View>
       <Text>Liste des dépenses de la journée</Text>
       <ButtonAdd openModal={openModal} />
-      {isOpen && <Text>Salut toi</Text>}
+ <EventOverlay isVisible={isOverlayVisible} onClose={closeModal}/>
     </SafeAreaView>
   );
 };
