@@ -52,8 +52,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     }
   }, [session]);
 
-  console.log('user', user);
-
   return (
     <AuthContext.Provider
       value={{
