@@ -19,9 +19,10 @@ export default function TabLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: 'blue', headerShown: false }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: 'orange', headerShown: false }}>
       <Tabs.Screen name="index" options={{ title: 'Dashboard' }} />
       <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
+      <Tabs.Screen name="stats" options={{ title: 'Stats' }} />
     </Tabs>
   );
 }
