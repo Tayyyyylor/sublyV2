@@ -29,7 +29,6 @@ const Signin = () => {
         password,
       };
       await loginUser(userData, signIn);
-      Alert.alert('Succès', 'Compte créé avec succès !');
       router.replace('/(tabs)');
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de se connecter.');
