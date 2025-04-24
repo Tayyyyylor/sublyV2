@@ -56,7 +56,6 @@ const Signin = () => {
       </Text>
       <View className="p-2 gap-3 mb-5">
         {inputData.map((input, index) => {
-          console.log('input', input);
           return (
             <Input
               secureTextEntry={input?.id === 'password' ? true : false}

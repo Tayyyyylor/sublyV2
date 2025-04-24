@@ -88,7 +88,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
     if (!session) return null;
     try {
       const decoded = jwtDecode<{ username: string; sub: string }>(session);
-      console.log('decoded', decoded)
       return { username: decoded.username, id: decoded.sub };
     } catch (error) {
       console.error('Erreur de décodage du JWT:', error);

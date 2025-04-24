@@ -32,11 +32,6 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
 
   const [date, setDate] = useState(new Date(1598051730000));
 
-  console.log('name', name);
-  console.log('amount', amount);
-  console.log('selectedFrequency', selectedFrequency);
-  console.log('date', date);
-
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
     {
