@@ -1,4 +1,4 @@
-import Stats from "@/components/stats/Stats";
+import Stats from '@/components/stats/Stats';
 
 export default function StatsScreen() {
   return <Stats />;

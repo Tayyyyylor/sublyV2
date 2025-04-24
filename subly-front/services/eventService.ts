@@ -24,12 +24,10 @@ export const createEvent = async (eventData: Event) => {
 
 export const getAllEvent = async () => {
   try {
-    const response = await axiosInstance.get('/events')
-    return response.data
-  } catch (error) {
-    
-  }
-}
+    const response = await axiosInstance.get('/events');
+    return response.data;
+  } catch (error) {}
+};
 export const modifyEvent = async (
   eventData: Event,
   signIn: (token: string) => void,

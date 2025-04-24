@@ -5,17 +5,17 @@ import { useEffect } from 'react';
 
 export default function SigninScreen() {
   const { user, isLoading } = useAuth();
-const router = useRouter();
+  const router = useRouter();
 
-useEffect(() => {
-  if (!isLoading && user) {
-    router.replace('/(tabs)');
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.replace('/(tabs)');
+    }
+  }, [user, isLoading]);
+
+  if (isLoading) {
+    return null;
   }
-}, [user, isLoading]);
 
-if (isLoading) {
-  return null; 
-}
-
-  return (  <Signin /> )
+  return <Signin />;
 }

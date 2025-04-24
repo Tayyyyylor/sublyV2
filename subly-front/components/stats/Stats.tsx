@@ -1,31 +1,31 @@
-import { getAllEvent } from '@/services/eventService'
-import { useRouter } from 'expo-router'
-import React, { useEffect, useState } from 'react'
-import { Alert, FlatList, SafeAreaView, Text, View } from 'react-native'
+import { getAllEvent } from '@/services/eventService';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Alert, FlatList, SafeAreaView, Text, View } from 'react-native';
 
 const Stats = () => {
-    const [events, setEvents] = useState<Event[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-  
-    useEffect(() => {
-      const fetchEvents = async () => {
-        try {
-          const resp = await getAllEvent();
-          setEvents(resp);
-        } catch (error) {
-          Alert.alert('Erreur', 'Impossible de se connecter.');
-        } finally {
-          setIsLoading(false);
-        }
-      };
-  
-      fetchEvents();
-    }, []);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  console.log('events', events)
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const resp = await getAllEvent();
+        setEvents(resp);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de se connecter.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  console.log('events', events);
   return (
-     <SafeAreaView>
-       {/* {isLoading ? (
+    <SafeAreaView>
+      {/* {isLoading ? (
         <Text>Chargement...</Text>
       ) : (
         <FlatList
@@ -40,8 +40,8 @@ const Stats = () => {
           )}
         />
       )} */}
-     </SafeAreaView>
-  )
-}
+    </SafeAreaView>
+  );
+};
 
-export default Stats
+export default Stats;
