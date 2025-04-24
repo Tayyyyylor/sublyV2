@@ -18,6 +18,10 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [verifyPassword, setVerifyPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [confirmError, setConfirmError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const inputData = [
@@ -32,10 +36,59 @@ const Signup = () => {
       showPassword,
       togglePassword: () => setShowPassword(!showPassword),
     },
+    {
+      placeholder: 'Confirmer mot de passe',
+      value: verifyPassword,
+      onChangeText: setVerifyPassword,
+      id: 'password',
+      secureTextEntry: !showPassword,
+      showPassword,
+      togglePassword: () => setShowPassword(!showPassword),
+    },
   ];
 
+  // Validations
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+  const isFormValid =
+    username.trim() !== '' &&
+    emailRegex.test(email) &&
+    passwordRegex.test(password) &&
+    password === verifyPassword;
+
+  const validateForm = () => {
+    let isValid = true;
+
+    setEmailError('');
+    setPasswordError('');
+    setConfirmError('');
+
+    if (!emailRegex.test(email)) {
+      setEmailError('Email invalide');
+      isValid = false;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setPasswordError(
+        'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial',
+      );
+      isValid = false;
+    }
+
+    if (password !== verifyPassword) {
+      setConfirmError('Les mots de passe ne correspondent pas');
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
   const handleSignup = async () => {
-    if (!username || !email || !password) {
+    const isValid = validateForm();
+    if (!isValid) return;
+
+    if (!username || !email || !password || !verifyPassword) {
       Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
       return;
     }
@@ -74,11 +127,24 @@ const Signup = () => {
             value={input.value}
             showPassword={input.showPassword}
             togglePassword={input.togglePassword}
+            errorMessage={
+              index === 1
+                ? emailError
+                : index === 2
+                  ? passwordError
+                  : index === 3
+                    ? confirmError
+                    : ''
+            }
           />
         ))}
       </View>
       <View className="flex-col items-center gap-3">
-        <ButtonAuth onPress={handleSignup} label="S'inscrire" />
+        <ButtonAuth
+          onPress={handleSignup}
+          label="S'inscrire"
+          isDisabled={!isFormValid}
+        />
         <ButtonAuth
           onPress={handleRedirectSignIn}
           label="déjà inscrit ? connectez-vous"
