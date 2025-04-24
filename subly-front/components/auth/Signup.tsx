@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { registerUser } from '@/services/authService';
 import { useRouter } from 'expo-router';
 import ButtonAuth from './ButtonAuth';
+import Title from '../Title';
 
 const Signup = () => {
   const router = useRouter();
@@ -108,9 +109,7 @@ const Signup = () => {
 
   return (
     <SafeAreaView>
-      <Text className="text-xl font-bold text-black-600 text-center">
-        Inscription
-      </Text>
+      <Title label="Inscription" />
       <View className="p-2 gap-5 mb-5">
         {inputData.map((input, index) => (
           <Input

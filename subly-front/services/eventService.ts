@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 
 interface EventType {
   name: string;
-  amount: string;
+  amount: number;
   frequency: FrequencyType;
   startDate: Date;
 }

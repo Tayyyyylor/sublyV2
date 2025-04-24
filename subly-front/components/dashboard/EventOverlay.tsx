@@ -20,9 +20,14 @@ import { today } from '@/helpers/global.utils';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
+  selectedDate: string;
 }
 
-const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
+const EventOverlay = ({
+  isVisible,
+  onClose,
+  selectedDate,
+}: EventOverlayProps) => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(0));
   const [name, setName] = useState('');
@@ -30,8 +35,7 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
   const [selectedFrequency, setSelectedFrequency] =
     useState<FrequencyType>('monthly');
 
-  const [date, setDate] = useState(today);
-
+  const [date, setDate] = useState<Date>(new Date(selectedDate));
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
     {
@@ -77,11 +81,11 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
       Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
       return;
     }
-
+    const sanitizedAmount = parseFloat(amount.replace(',', '.'));
     try {
       const eventData = {
         name,
-        amount,
+        amount: sanitizedAmount,
         frequency: selectedFrequency,
         startDate: date,
       };
@@ -114,6 +118,12 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
       slideAnim.setValue(0);
     }
   }, [isVisible]);
+
+  useEffect(() => {
+    if (isVisible) {
+      setDate(new Date(selectedDate));
+    }
+  }, [isVisible, selectedDate]);
 
   return (
     <Animated.View className="absolute inset-0" style={{ opacity: fadeAnim }}>

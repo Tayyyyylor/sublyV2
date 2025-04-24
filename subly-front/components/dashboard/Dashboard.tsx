@@ -19,6 +19,7 @@ const Dashboard = () => {
     new Date().toISOString().split('T')[0],
   );
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [allEvents, setAllEvents] = useState<EventType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -34,10 +35,42 @@ const Dashboard = () => {
     setIsOverlayVisible(false);
   };
 
+  const generateMarkedDates = (events: EventType[], selectedDate: string) => {
+    const marked: Record<
+      string,
+      {
+        marked?: boolean;
+        dotColor?: string;
+        selected?: boolean;
+        selectedColor?: string;
+      }
+    > = {};
+
+    events.forEach((event) => {
+      const dateKey = event.startDate.toISOString().split('T')[0];
+
+      marked[dateKey] = {
+        ...marked[dateKey], // au cas où on veut empiler d'autres infos plus tard
+        marked: true,
+        dotColor: 'red', // ou une couleur dynamique selon l’event
+      };
+    });
+
+    // ensuite on marque la date sélectionnée
+    marked[selectedDate] = {
+      ...marked[selectedDate], // ✅ on garde dotColor etc.
+      selected: true,
+      selectedColor: 'blue',
+    };
+
+    return marked;
+  };
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const resp = await getAllEvent();
+        setAllEvents(resp);
         const filtered = resp.filter((event: EventType) =>
           event.startDate.toISOString().startsWith(selectedDate),
         );
@@ -69,9 +102,7 @@ const Dashboard = () => {
           onDayPress={(day: any) => {
             setSelectedDate(day.dateString);
           }}
-          markedDates={{
-            [selectedDate]: { selected: true, selectedColor: 'blue' },
-          }}
+          markedDates={generateMarkedDates(allEvents, selectedDate)}
         />
       </View>
       <ScrollView
@@ -90,7 +121,11 @@ const Dashboard = () => {
         )}
       </ScrollView>
       <ButtonAdd openModal={openModal} className="absolute bottom-2 right-2" />
-      <EventOverlay isVisible={isOverlayVisible} onClose={closeModal} />
+      <EventOverlay
+        isVisible={isOverlayVisible}
+        onClose={closeModal}
+        selectedDate={selectedDate}
+      />
     </SafeAreaView>
   );
 };
