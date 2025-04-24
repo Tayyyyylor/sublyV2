@@ -1,17 +1,19 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
-import { Button, Pressable, Text } from 'react-native';
+import { Pressable } from 'react-native';
 
 interface ButtonAddProps {
   openModal: () => void;
+  className?: string;
 }
 
-const ButtonAdd = ({ openModal }: ButtonAddProps) => {
+const ButtonAdd = ({ openModal, className }: ButtonAddProps) => {
   return (
     <Pressable
       onPress={openModal}
-      className="bg-blue-500 br-100 w-[20px] flex items-center justify-center rounded-full"
+      className={`${className} bg-blue-500 w-[60px] h-[60px] rounded-full items-center justify-center shadow-lg`}
     >
-      <Text className="text-white">+</Text>
+      <Ionicons name="add" size={32} color="white" />
     </Pressable>
   );
 };

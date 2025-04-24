@@ -1,17 +1,29 @@
-import { Frequency } from '@/types/global';
+import { FrequencyType } from '@/types/global';
 import axiosInstance from '../helpers/axiosInstance';
 import { router } from 'expo-router';
 
-interface Event {
+interface EventType {
   name: string;
   amount: string;
-  frequency: Frequency;
+  frequency: FrequencyType;
   startDate: Date;
 }
 
-export const createEvent = async (eventData: Event) => {
+const formatDateToUtcMidnight = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}T00:00:00.000Z`;
+};
+
+export const createEvent = async (eventData: EventType) => {
   try {
-    const response = await axiosInstance.post('/events', eventData);
+    const eventPayload = {
+      ...eventData,
+      startDate: formatDateToUtcMidnight(eventData.startDate),
+    };
+
+    const response = await axiosInstance.post('/events', eventPayload);
     return response.data;
   } catch (error: any) {
     console.error(
@@ -25,15 +37,24 @@ export const createEvent = async (eventData: Event) => {
 export const getAllEvent = async () => {
   try {
     const response = await axiosInstance.get('/events');
-    return response.data;
-  } catch (error) {}
+    const rawData = response.data;
+    return rawData.map((event: any) => ({
+      ...event,
+      startDate: new Date(event.startDate),
+      endDate: event.endDate ? new Date(event.endDate) : undefined,
+    }));
+  } catch (error) {
+    console.error('Erreur de récupération des événements :', error);
+    throw error;
+  }
 };
+
 export const modifyEvent = async (
-  eventData: Event,
+  eventData: EventType,
   signIn: (token: string) => void,
 ) => {
   try {
-    const response = await axiosInstance.post('/auth/login', eventData);
+    const response = await axiosInstance.post('/events/login', eventData);
     const token = response.data.access_token;
     if (!token) throw new Error('Token manquant dans la réponse API');
     signIn(token);
