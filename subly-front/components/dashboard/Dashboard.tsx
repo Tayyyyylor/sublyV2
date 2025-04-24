@@ -46,19 +46,23 @@ const Dashboard = () => {
       }
     > = {};
 
-    events.forEach((event) => {
-      const dateKey = event.startDate.toISOString().split('T')[0];
+    const horizon = new Date();
+    horizon.setFullYear(horizon.getFullYear() + 1); // 1 an d’avance
 
-      marked[dateKey] = {
-        ...marked[dateKey], // au cas où on veut empiler d'autres infos plus tard
-        marked: true,
-        dotColor: 'red', // ou une couleur dynamique selon l’event
-      };
+    events.forEach((event) => {
+      const recurringDates = generateRecurringDates(event, horizon);
+
+      recurringDates.forEach((dateKey) => {
+        marked[dateKey] = {
+          ...marked[dateKey],
+          marked: true,
+          dotColor: 'red',
+        };
+      });
     });
 
-    // ensuite on marque la date sélectionnée
     marked[selectedDate] = {
-      ...marked[selectedDate], // ✅ on garde dotColor etc.
+      ...marked[selectedDate],
       selected: true,
       selectedColor: 'blue',
     };
@@ -66,13 +70,93 @@ const Dashboard = () => {
     return marked;
   };
 
+  const generateRecurringDates = (
+    event: EventType,
+    selectedLimit?: Date,
+  ): string[] => {
+    const occurrences: string[] = [];
+    const start = new Date(event.startDate);
+    const limit = event.endDate
+      ? new Date(event.endDate)
+      : (selectedLimit ?? new Date());
+
+    if (!event.frequency || event.frequency === 'one') {
+      occurrences.push(start.toISOString().split('T')[0]);
+      return occurrences;
+    }
+
+    let current = new Date(start);
+    while (current <= limit) {
+      occurrences.push(current.toISOString().split('T')[0]);
+
+      switch (event.frequency) {
+        case 'monthly':
+          current.setMonth(current.getMonth() + 1);
+          break;
+        case 'hebdo':
+          current.setDate(current.getDate() + 7);
+          break;
+        case 'trimestriel':
+          current.setMonth(current.getMonth() + 3);
+          break;
+        case 'yearly':
+          current.setFullYear(current.getFullYear() + 1);
+          break;
+      }
+    }
+
+    return occurrences;
+  };
+
+  const doesEventOccurOnDate = (event: EventType, date: string): boolean => {
+    const start = new Date(event.startDate);
+    const selected = new Date(date);
+
+    // Si l'événement est avant la date sélectionnée
+    if (start > selected) return false;
+
+    switch (event.frequency) {
+      case 'one':
+        return start.toISOString().split('T')[0] === date;
+
+      case 'monthly':
+        return start.getDate() === selected.getDate();
+
+      case 'hebdo':
+        // différence en jours
+        const daysDiff = Math.floor(
+          (+selected - +start) / (1000 * 60 * 60 * 24),
+        );
+        return daysDiff % 7 === 0;
+
+      case 'trimestriel':
+        return (
+          start.getDate() === selected.getDate() &&
+          (selected.getMonth() - start.getMonth()) % 3 === 0
+        );
+
+      case 'yearly':
+        return (
+          start.getDate() === selected.getDate() &&
+          start.getMonth() === selected.getMonth()
+        );
+
+      default:
+        return false;
+    }
+  };
+
+  const filtered = allEvents.filter((event: EventType) =>
+    doesEventOccurOnDate(event, selectedDate),
+  );
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const resp = await getAllEvent();
         setAllEvents(resp);
-        const filtered = resp.filter((event: EventType) =>
-          event.startDate.toISOString().startsWith(selectedDate),
+        const filtered = allEvents.filter((event: EventType) =>
+          doesEventOccurOnDate(event, selectedDate),
         );
         setEvents(filtered);
       } catch (error) {
