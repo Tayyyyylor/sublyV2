@@ -1,6 +1,6 @@
 import { Body, Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
+import { LoginUserDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -8,8 +8,8 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Body() signInDto: LoginDto) {
-    return this.authService.login(signInDto.email, signInDto.password);
+  login(@Body() loginDto: LoginUserDto) {
+    return this.authService.login(loginDto.email, loginDto.password);
   }
 
   // @Post('oauth/apple')
