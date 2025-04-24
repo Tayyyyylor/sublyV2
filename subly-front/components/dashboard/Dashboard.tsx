@@ -8,15 +8,23 @@ import { getAllEvent } from '@/services/eventService';
 import { EventType } from '@/types/global';
 import CalendarComponent from './Calendar';
 import EventCard from './EventCard';
+import { today } from '@/helpers/global.utils';
+import SaleOfTheDay from './SaleOfTheDay';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const date = format(today, 'dd/MM/yyyy');
 
-  const date = format(new Date(), 'dd/MM/yyyy');
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0],
   );
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [events, setEvents] = useState<EventType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const dailyTotal = events.reduce((sum, event) => {
+    return sum + Number(event.amount);
+  }, 0);
 
   const openModal = () => {
     setIsOverlayVisible(true);
@@ -25,9 +33,6 @@ const Dashboard = () => {
   const closeModal = () => {
     setIsOverlayVisible(false);
   };
-
-  const [events, setEvents] = useState<EventType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -47,8 +52,6 @@ const Dashboard = () => {
     fetchEvents();
   }, [selectedDate, isOverlayVisible]);
 
-  console.log('events', events);
-
   return (
     <SafeAreaView className="relative h-full">
       <Text className="font-bold pl-4 mb-[10px] text-[20px] text-blue-700">
@@ -58,12 +61,9 @@ const Dashboard = () => {
         Hello <Text className="text-blue-700">{user?.username}</Text> !
         Bienvenue !
       </Text>
-      <Text className="text-black-700 text-[20px] text-center mt-2 font-bold">
-        Dépense prévue ce jour : <Text className="text-blue-700">20€</Text>
-      </Text>
-      <Text className="text-grey-600 text-center mt-2">
-        Solde fin du mois : 12€
-      </Text>
+      <View>
+        <SaleOfTheDay totalCount={dailyTotal} currency="€" />
+      </View>
       <View className="p-[10px]">
         <CalendarComponent
           onDayPress={(day: any) => {
