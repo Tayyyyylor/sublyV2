@@ -10,22 +10,18 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(
-    username: string,
-    pass: string,
-  ): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOne(username);
+  async login(email: string, pass: string): Promise<{ access_token: string }> {
+    const user = await this.usersService.findOne(email);
+    console.log('user', user);
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }
     const isPasswordValid = await bcrypt.compare(pass, user.password as string);
-    console.log('pass', pass);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Mot de passe incorrect');
     }
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, email: user.email };
     const token = await this.jwtService.signAsync(payload);
-    console.log('access_token', token);
     return {
       access_token: token,
     };

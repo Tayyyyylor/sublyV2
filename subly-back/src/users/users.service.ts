@@ -12,19 +12,19 @@ export class UsersService {
   ) {}
 
   async create(username: string, email: string, password: string) {
+    const normalizedEmail = email.toLowerCase();
     const existingUser = await this.usersRepository.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
     });
     if (existingUser) {
       throw new ConflictException('Email déjà utilisé');
     }
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
-    console.log('hashedPassword', hashedPassword);
 
     const user = this.usersRepository.create({
       username,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     });
     return this.usersRepository.save(user);
@@ -34,12 +34,14 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async findOne(username: string): Promise<Users | null> {
-    const user = await this.usersRepository.findOne({ where: { username } });
-    return user;
+  async findOne(email: string): Promise<Users | null> {
+    const normalizedEmail = email.toLowerCase();
+    return await this.usersRepository.findOne({
+      where: { email: normalizedEmail },
+    });
   }
 
-  async findOneByMail(email: string): Promise<Users | null> {
-    return this.usersRepository.findOne({ where: { email } });
+  async deleteUser(id: number): Promise<void> {
+    await this.usersRepository.delete(id);
   }
 }

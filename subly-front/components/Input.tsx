@@ -21,14 +21,14 @@ const Input = ({
   value,
   onChangeText,
   inputMode,
-  secureTextEntry,
+  secureTextEntry = false,
   showPassword,
   togglePassword,
 }: InputProps) => {
   return (
     <View>
       <TextInput
-        secureTextEntry={(secureTextEntry = showPassword ? false : true)}
+       secureTextEntry={secureTextEntry ? !showPassword : false}
         className="bg-[white] p-3 w-full border-2 border-black-500 rounded-[5px] relative"
         placeholder={placeholder}
         value={value}
