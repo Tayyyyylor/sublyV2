@@ -10,12 +10,12 @@ const Signin = () => {
   const router = useRouter();
   const { signIn } = useAuth();
 
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const inputData = [
-    { placeholder: 'username', value: username, onChangeText: setUsername },
+    { placeholder: 'email', value: email, onChangeText: setEmail },
     {
       placeholder: 'Mot de passe',
       value: password,
@@ -28,14 +28,14 @@ const Signin = () => {
   ];
 
   const handleLogin = async () => {
-    if (!username || !password) {
+    if (!email || !password) {
       Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
       return;
     }
 
     try {
       const userData = {
-        username,
+        email,
         password,
       };
       await loginUser(userData, signIn);
