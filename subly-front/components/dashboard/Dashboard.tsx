@@ -8,6 +8,7 @@ import EventOverlay from './EventOverlay';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  console.log('user', user)
 
   const date = format(new Date(), 'dd/MM/yyyy');
   const [selectedDate, setSelectedDate] = useState(

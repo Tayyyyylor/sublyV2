@@ -20,7 +20,11 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Mot de passe incorrect');
     }
-    const payload = { sub: user.id, email: user.email };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      username: user.username,
+    };
     const token = await this.jwtService.signAsync(payload);
     return {
       access_token: token,
