@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   InputModeOptions,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -14,6 +15,7 @@ interface InputProps {
   secureTextEntry?: boolean;
   showPassword?: boolean;
   togglePassword?: () => void;
+  errorMessage?: string;
 }
 
 const Input = ({
@@ -24,15 +26,17 @@ const Input = ({
   secureTextEntry = false,
   showPassword,
   togglePassword,
+  errorMessage,
 }: InputProps) => {
   return (
     <View>
       <TextInput
-       secureTextEntry={secureTextEntry ? !showPassword : false}
-        className="bg-[white] p-3 w-full border-2 border-black-500 rounded-[5px] relative"
+        secureTextEntry={secureTextEntry ? !showPassword : false}
+        className={`bg-[white] p-3 w-full border-2 rounded-[5px] relative ${errorMessage ? 'border-red-500' : 'border-black-500'}`}
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
+        textContentType="oneTimeCode"
         inputMode={inputMode}
       />
       {togglePassword && (
@@ -46,6 +50,9 @@ const Input = ({
             color="black"
           />
         </TouchableOpacity>
+      )}
+      {errorMessage && (
+        <Text className="text-red-500 text-xs mt-1">{errorMessage}</Text>
       )}
     </View>
   );
