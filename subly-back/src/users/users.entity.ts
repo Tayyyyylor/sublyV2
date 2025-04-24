@@ -1,17 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Events } from 'src/events/events.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column()
   username: string;
 
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column()
   password?: string;
 
   @Column({ nullable: true })
@@ -19,4 +20,7 @@ export class Users {
 
   @Column({ nullable: true })
   appleId?: string;
+
+  @OneToMany(() => Events, (event) => event.creator)
+  events: Events[];
 }
