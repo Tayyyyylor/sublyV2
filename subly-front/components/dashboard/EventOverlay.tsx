@@ -15,7 +15,8 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Input from '../Input';
 import { createEvent } from '@/services/eventService';
-import { Frequency } from '@/types/global';
+import { FrequencyType } from '@/types/global';
+import { today } from '@/helpers/global.utils';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -26,11 +27,10 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
   const [slideAnim] = useState(new Animated.Value(0));
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<string>('');
-
   const [selectedFrequency, setSelectedFrequency] =
-    useState<Frequency>('monthly');
+    useState<FrequencyType>('monthly');
 
-  const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(today);
 
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
@@ -44,6 +44,7 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
 
   const onChange = (_event: any, selectedDate?: Date) => {
     if (selectedDate) {
+      selectedDate.setHours(0, 0, 0, 0);
       setDate(selectedDate);
     }
   };
@@ -86,6 +87,7 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
       };
       await createEvent(eventData);
       Alert.alert('Succès', 'Event créé avec succès !');
+      handleClose();
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de se connecter.');
     }
@@ -115,14 +117,12 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
 
   return (
     <Animated.View className="absolute inset-0" style={{ opacity: fadeAnim }}>
-      {/* Fond semi-transparent cliquable */}
       <TouchableWithoutFeedback onPress={handleClose}>
         <View className="flex-1 bg-black bg-opacity-50" />
       </TouchableWithoutFeedback>
 
-      {/* Contenu du modal */}
       <Animated.View
-        className="absolute bottom-0 w-full bg-red-900 rounded-t-3xl p-6"
+        className="absolute bottom-0 w-full bg-white rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
           maxHeight: '80%', // Limite à 80% de la hauteur
@@ -133,15 +133,17 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
           className="flex-1"
         >
           <SafeAreaView>
-            {inputData.map((input, index) => (
-              <Input
-                key={index}
-                inputMode={input.inputMode as InputModeOptions}
-                placeholder={input.placeholder}
-                onChangeText={input.onChangeText}
-                value={input.value}
-              />
-            ))}
+            <View className="p-2 gap-5 mb-5">
+              {inputData.map((input, index) => (
+                <Input
+                  key={index}
+                  inputMode={input.inputMode as InputModeOptions}
+                  placeholder={input.placeholder}
+                  onChangeText={input.onChangeText}
+                  value={input.value}
+                />
+              ))}
+            </View>
             <Picker
               selectedValue={selectedFrequency}
               onValueChange={(itemValue, itemIndex) =>
@@ -155,7 +157,7 @@ const EventOverlay = ({ isVisible, onClose }: EventOverlayProps) => {
               <Picker.Item label="Annuel" value="yearly" />
             </Picker>
             <View className="flex justify-center items-center">
-              <Text className="text-white font-bold text-[18px] mb-[20px]">
+              <Text className="text-black font-bold text-[18px] mb-[20px]">
                 Date de début
               </Text>
               <DateTimePicker

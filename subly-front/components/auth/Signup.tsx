@@ -51,12 +51,6 @@ const Signup = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-  const isFormValid =
-    username.trim() !== '' &&
-    emailRegex.test(email) &&
-    passwordRegex.test(password) &&
-    password === verifyPassword;
-
   const validateForm = () => {
     let isValid = true;
 
@@ -140,11 +134,7 @@ const Signup = () => {
         ))}
       </View>
       <View className="flex-col items-center gap-3">
-        <ButtonAuth
-          onPress={handleSignup}
-          label="S'inscrire"
-          isDisabled={!isFormValid}
-        />
+        <ButtonAuth onPress={handleSignup} label="S'inscrire" />
         <ButtonAuth
           onPress={handleRedirectSignIn}
           label="déjà inscrit ? connectez-vous"
