@@ -12,7 +12,6 @@ export class AuthService {
 
   async login(email: string, pass: string): Promise<{ access_token: string }> {
     const user = await this.usersService.findOne(email);
-    console.log('user', user);
     if (!user) {
       throw new UnauthorizedException('Utilisateur non trouvé');
     }

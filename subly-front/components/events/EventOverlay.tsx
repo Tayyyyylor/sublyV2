@@ -16,7 +16,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Input from '../Input';
 import { createEvent } from '@/services/eventService';
 import { FrequencyType } from '@/types/global';
-import { today } from '@/helpers/global.utils';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;

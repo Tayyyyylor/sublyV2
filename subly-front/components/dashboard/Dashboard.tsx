@@ -3,17 +3,19 @@ import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import ButtonAdd from '../ButtonAdd';
-import EventOverlay from './EventOverlay';
+import EventOverlay from '../events/EventOverlay';
 import { getAllEvent } from '@/services/eventService';
 import { EventType } from '@/types/global';
 import CalendarComponent from './Calendar';
-import EventCard from './EventCard';
+import EventCard from '../events/EventCard';
 import { today } from '@/helpers/global.utils';
 import SaleOfTheDay from './SaleOfTheDay';
+import { useRouter } from 'expo-router';
 
 const Dashboard = () => {
   const { user } = useAuth();
   const date = format(today, 'dd/MM/yyyy');
+  const router = useRouter();
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split('T')[0],
@@ -199,8 +201,14 @@ const Dashboard = () => {
             Aucun événement prévu
           </Text>
         ) : (
-          events.map((event, idx) => (
-            <EventCard key={idx} name={event.name} amount={event.amount} />
+          events.map((event) => (
+            <EventCard
+    key={event.id}
+    id={event.id}
+    name={event.name}
+    amount={event.amount}
+    onPress={() => router.push(`/event/${event.id}`)}
+  />
           ))
         )}
       </ScrollView>
