@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 
 interface EventType {
   name: string;
-  amount: string;
+  amount: number;
   frequency: FrequencyType;
   startDate: Date;
 }
@@ -48,6 +48,21 @@ export const getAllEvent = async () => {
     throw error;
   }
 };
+
+export const getOneEvent = async (id: string) => {
+  try {
+    const response = await axiosInstance.get(`/events/${id}`);
+    const event = response.data;
+    return {
+      ...event,
+      startDate: new Date(event.startDate),
+      endDate: event.endDate ? new Date(event.endDate) : undefined,
+    };
+  } catch (error) {
+    console.error('Erreur de récupération des événements :', error);
+    throw error;
+  }
+}
 
 export const modifyEvent = async (
   eventData: EventType,

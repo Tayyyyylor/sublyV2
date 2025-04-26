@@ -9,7 +9,7 @@ export class Events {
   @Column()
   name: string;
 
-  @Column()
+  @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
 
   @Column({

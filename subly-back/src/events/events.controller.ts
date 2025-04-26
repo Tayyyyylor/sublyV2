@@ -1,42 +1,68 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { EventsService } from './events.service';
-import { Users } from 'src/users/users.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UpdateEventDto } from './dto/update-event-dto';
+import { Request } from 'express';
+import { CreateEventDto } from './dto/create-event.dto';
 
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.eventsService.findAll();
   }
-  @Get(':name')
-  findOne(@Param('name') name: string) {
-    return this.eventsService.findOne(name);
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.eventsService.findOneById(id);
   }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   create(
+    @Req() req: Request,
     @Body()
-    body: {
-      name: string;
-      amount: number;
-      frequency: 'one' | 'hebdo' | 'monthly' | 'trimestriel' | 'yearly';
-      startDate: string | Date;
-      creator: Users;
-    },
+    createEventDto: CreateEventDto,
   ) {
     const startDate =
-      typeof body.startDate === 'string'
-        ? new Date(body.startDate)
-        : body.startDate;
+      typeof createEventDto.startDate === 'string'
+        ? new Date(createEventDto.startDate)
+        : createEventDto.startDate;
+
+    const user = req.user;
 
     return this.eventsService.create(
-      body.name,
-      body.amount,
-      body.frequency,
+      createEventDto.name,
+      createEventDto.amount,
+      createEventDto.frequency,
       startDate,
-      body.creator,
+      user,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+    return this.eventsService.update(id, updateEventDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.eventsService.remove(id);
   }
 }

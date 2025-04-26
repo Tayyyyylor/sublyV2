@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { loginUser } from '@/services/authService';
 import { useAuth } from '@/context/useAuth';
 import ButtonAuth from './ButtonAuth';
+import Title from '../Title';
 
 const Signin = () => {
   const router = useRouter();
@@ -51,9 +52,7 @@ const Signin = () => {
 
   return (
     <SafeAreaView>
-      <Text className="text-xl font-bold text-black-600 text-center">
-        Connexion
-      </Text>
+      <Title label="Connexion" />
       <View className="p-2 gap-3 mb-5">
         {inputData.map((input, index) => {
           return (
