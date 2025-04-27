@@ -2,7 +2,7 @@ import { useAuth } from '@/context/useAuth';
 import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
-import ButtonAdd from '../ButtonAdd';
+import ButtonAdd from '../events/ButtonAdd';
 import EventOverlay from '../events/EventOverlay';
 import { getAllEvent } from '@/services/eventService';
 import { EventType } from '@/types/global';
@@ -203,12 +203,12 @@ const Dashboard = () => {
         ) : (
           events.map((event) => (
             <EventCard
-    key={event.id}
-    id={event.id}
-    name={event.name}
-    amount={event.amount}
-    onPress={() => router.push(`/event/${event.id}`)}
-  />
+              key={event.id}
+              id={event.id}
+              name={event.name}
+              amount={event.amount}
+              onPress={() => router.push(`/event/${event.id}`)}
+            />
           ))
         )}
       </ScrollView>

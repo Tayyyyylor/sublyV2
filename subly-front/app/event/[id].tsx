@@ -1,6 +1,6 @@
-import EventDetails from '@/components/events/EventDetails'
-import React from 'react'
+import EventDetails from '@/components/events/EventDetails';
+import React from 'react';
 
-export default function EventDetailsPage () {
-  return <EventDetails />
+export default function EventDetailsPage() {
+  return <EventDetails />;
 }

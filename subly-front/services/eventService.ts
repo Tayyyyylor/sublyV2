@@ -62,7 +62,7 @@ export const getOneEvent = async (id: string) => {
     console.error('Erreur de récupération des événements :', error);
     throw error;
   }
-}
+};
 
 export const modifyEvent = async (
   eventData: EventType,
