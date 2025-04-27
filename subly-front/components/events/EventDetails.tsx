@@ -1,44 +1,176 @@
-import { getAllEvent, getOneEvent } from '@/services/eventService';
-import { EventType } from '@/types/global';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Button,
+  SafeAreaView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react'
-import { Alert, Button, Pressable, SafeAreaView, Text, View } from 'react-native'
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { deleteEvent, getOneEvent, modifyEvent } from '@/services/eventService';
+import { EventType, FrequencyType } from '@/types/global';
+
+import DefaultButton from '../DefaultButton';
+import DefaultModal from '../DefaultModal';
+import FrequencyPicker from '../FrequencyPicker';
 
 const EventDetails = () => {
-    const { id } = useLocalSearchParams();
-    const router = useRouter()
+  const { id } = useLocalSearchParams();
+  const router = useRouter();
   const [event, setEvent] = useState<EventType | null>(null);
-  console.log('event', event)
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingAmount, setIsEditingAmount] = useState(false);
+  const [isEditingFrequency, setIsEditingFrequency] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newAmount, setNewAmount] = useState('');
+  const [newFrequency, setNewFrequency] = useState<FrequencyType>('monthly');
 
   const handleClickBack = () => {
-    router.back()
-  }
+    router.back();
+  };
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleModifyEvent = async () => {
+    if (!event) return;
+
+    const payload = {
+      name: newName || event.name,
+      amount: newAmount
+        ? parseFloat(newAmount.replace(',', '.'))
+        : event.amount,
+      frequency: newFrequency || event.frequency,
+    };
+
+    if (isNaN(payload.amount)) {
+      Alert.alert('Erreur', 'Le montant doit être un nombre valide.');
+      return;
+    }
+
+    try {
+      await modifyEvent(id as string, payload);
+      Alert.alert('Succès', 'Événement modifié.');
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible de modifier l'événement.");
+      console.error('Erreur modification event :', error);
+    }
+  };
+
+  const handleDeleteEvent = async () => {
+    try {
+      await deleteEvent(id as string);
+      Alert.alert('Succès', 'Événement supprimé.');
+      router.replace('/(tabs)');
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible de supprimer l'événement.");
+      console.error('Erreur suppression event :', error);
+    }
+  };
 
   useEffect(() => {
-      const fetchEvents = async () => {
-        try {
-          const resp = await getOneEvent(id as string);
-          setEvent(resp);
-        } catch (error) {
-          Alert.alert('Erreur', 'Impossible de se connecter.');
-        }
-      };
-  
-      fetchEvents();
-    }, []);
+    const fetchEvents = async () => {
+      try {
+        const resp = await getOneEvent(id as string);
+        setEvent(resp);
+        setNewName(resp.name);
+        setNewAmount(resp.amount.toString());
+        setNewFrequency(resp.frequency);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de se connecter.');
+      }
+    };
+
+    fetchEvents();
+  }, [id]);
 
   return (
-   <SafeAreaView className='relative'>
-    <Button onPress={handleClickBack} title='Back' />
-    <View className='flex-col items-center gap-5'>
-     <Text className="text-[50px] font-bold text-center">{event?.name}</Text>
-     <Text className='text-[20px] text-red-700 text-center bg-red-300 p-2 rounded-[10px]'>{event?.amount}€</Text>
-    </View>
-    <View className='bg-grey-500 w-[100%] h-[100dvh]'>
-      <Text>{event?.frequency}</Text>
-    </View>
-   </SafeAreaView>
-  )
-}
+    <SafeAreaView className="relative flex-1 items-center p-4">
+      <Button onPress={handleClickBack} title="Retour" />
+      <View className="flex-row items-center gap-2 mt-8">
+        {isEditingName ? (
+          <TextInput
+            value={newName}
+            onChangeText={setNewName}
+            onBlur={handleModifyEvent}
+            className="text-[30px] font-bold text-center border-b border-gray-400 w-[70%]"
+          />
+        ) : (
+          <>
+            <Text className="text-[30px] font-bold text-center">
+              {event?.name}
+            </Text>
+            <TouchableOpacity onPress={() => setIsEditingName(true)}>
+              <Ionicons name="pencil" size={20} color="gray" />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
 
-export default EventDetails
+      <View className="flex-row items-center gap-2 mt-4">
+        {isEditingAmount ? (
+          <TextInput
+            value={newAmount}
+            onChangeText={setNewAmount}
+            keyboardType="decimal-pad"
+            onBlur={handleModifyEvent}
+            className="text-[20px] text-red-700 text-center border-b border-gray-400 w-[50%]"
+          />
+        ) : (
+          <>
+            <Text className="text-[20px] text-red-700">{event?.amount} €</Text>
+            <TouchableOpacity onPress={() => setIsEditingAmount(true)}>
+              <Ionicons name="pencil" size={20} color="gray" />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+
+      <View className="flex-row items-center gap-2 mt-4">
+        {isEditingFrequency ? (
+          <View className="w-full">
+            <FrequencyPicker
+              selectedValue={newFrequency}
+              onValueChange={(itemValue) => {
+                setNewFrequency(itemValue);
+                handleModifyEvent();
+                setIsEditingFrequency(false);
+              }}
+            />
+          </View>
+        ) : (
+          <>
+            <Text>{event?.frequency}</Text>
+            <TouchableOpacity onPress={() => setIsEditingFrequency(true)}>
+              <Ionicons name="pencil" size={16} color="gray" />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+
+      <View className="mt-10">
+        <DefaultButton label="Supprimer event" onPress={handleOpenModal} />
+      </View>
+
+      {showModal && (
+        <DefaultModal
+          onPressConfirm={handleDeleteEvent}
+          onPressCancel={handleCloseModal}
+          label="Voulez-vous vraiment supprimer cet évènement ?"
+        />
+      )}
+    </SafeAreaView>
+  );
+};
+
+export default EventDetails;

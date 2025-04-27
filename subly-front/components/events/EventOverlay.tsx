@@ -11,11 +11,13 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Input from '../Input';
+
 import { createEvent } from '@/services/eventService';
 import { FrequencyType } from '@/types/global';
+
+import Input from '../Input';
+import FrequencyPicker from '../FrequencyPicker';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -153,18 +155,11 @@ const EventOverlay = ({
                 />
               ))}
             </View>
-            <Picker
+            <FrequencyPicker
               selectedValue={selectedFrequency}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedFrequency(itemValue)
-              }
-            >
-              <Picker.Item label="Une fois" value="one" />
-              <Picker.Item label="Hebdomadaire" value="hebdo" />
-              <Picker.Item label="Mensuel" value="monthly" />
-              <Picker.Item label="Trimestriel" value="trimestriel" />
-              <Picker.Item label="Annuel" value="yearly" />
-            </Picker>
+              onValueChange={(itemValue) => setSelectedFrequency(itemValue)}
+            />
+
             <View className="flex justify-center items-center">
               <Text className="text-black font-bold text-[18px] mb-[20px]">
                 Date de début

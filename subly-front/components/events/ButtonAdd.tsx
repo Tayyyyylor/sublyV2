@@ -1,6 +1,6 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
 import { Pressable } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 interface ButtonAddProps {
   openModal: () => void;

@@ -1,16 +1,23 @@
-import { useAuth } from '@/context/useAuth';
-import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
-import ButtonAdd from '../ButtonAdd';
-import EventOverlay from '../events/EventOverlay';
-import { getAllEvent } from '@/services/eventService';
-import { EventType } from '@/types/global';
-import CalendarComponent from './Calendar';
-import EventCard from '../events/EventCard';
-import { today } from '@/helpers/global.utils';
-import SaleOfTheDay from './SaleOfTheDay';
+import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { format } from 'date-fns';
+
+import { EventType } from '@/types/global';
+import { useAuth } from '@/context/useAuth';
+import { getAllEvent } from '@/services/eventService';
+import { today } from '@/helpers/global.utils';
+import {
+  doesEventOccurOnDate,
+  generateMarkedDates,
+  getDailyTotal,
+} from './Dashboard.utils';
+
+import EventOverlay from '../events/EventOverlay';
+import EventCard from '../events/EventCard';
+import ButtonAdd from '../events/ButtonAdd';
+import CalendarComponent from './Calendar';
+import SaleOfTheDay from './SaleOfTheDay';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -23,11 +30,9 @@ const Dashboard = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [allEvents, setAllEvents] = useState<EventType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_, setIsLoading] = useState(true);
 
-  const dailyTotal = events.reduce((sum, event) => {
-    return sum + Number(event.amount);
-  }, 0);
+  const dailyTotal = getDailyTotal(events);
 
   const openModal = () => {
     setIsOverlayVisible(true);
@@ -36,121 +41,6 @@ const Dashboard = () => {
   const closeModal = () => {
     setIsOverlayVisible(false);
   };
-
-  const generateMarkedDates = (events: EventType[], selectedDate: string) => {
-    const marked: Record<
-      string,
-      {
-        marked?: boolean;
-        dotColor?: string;
-        selected?: boolean;
-        selectedColor?: string;
-      }
-    > = {};
-
-    const horizon = new Date();
-    horizon.setFullYear(horizon.getFullYear() + 1); // 1 an d’avance
-
-    events.forEach((event) => {
-      const recurringDates = generateRecurringDates(event, horizon);
-
-      recurringDates.forEach((dateKey) => {
-        marked[dateKey] = {
-          ...marked[dateKey],
-          marked: true,
-          dotColor: 'red',
-        };
-      });
-    });
-
-    marked[selectedDate] = {
-      ...marked[selectedDate],
-      selected: true,
-      selectedColor: 'blue',
-    };
-
-    return marked;
-  };
-
-  const generateRecurringDates = (
-    event: EventType,
-    selectedLimit?: Date,
-  ): string[] => {
-    const occurrences: string[] = [];
-    const start = new Date(event.startDate);
-    const limit = event.endDate
-      ? new Date(event.endDate)
-      : (selectedLimit ?? new Date());
-
-    if (!event.frequency || event.frequency === 'one') {
-      occurrences.push(start.toISOString().split('T')[0]);
-      return occurrences;
-    }
-
-    let current = new Date(start);
-    while (current <= limit) {
-      occurrences.push(current.toISOString().split('T')[0]);
-
-      switch (event.frequency) {
-        case 'monthly':
-          current.setMonth(current.getMonth() + 1);
-          break;
-        case 'hebdo':
-          current.setDate(current.getDate() + 7);
-          break;
-        case 'trimestriel':
-          current.setMonth(current.getMonth() + 3);
-          break;
-        case 'yearly':
-          current.setFullYear(current.getFullYear() + 1);
-          break;
-      }
-    }
-
-    return occurrences;
-  };
-
-  const doesEventOccurOnDate = (event: EventType, date: string): boolean => {
-    const start = new Date(event.startDate);
-    const selected = new Date(date);
-
-    // Si l'événement est avant la date sélectionnée
-    if (start > selected) return false;
-
-    switch (event.frequency) {
-      case 'one':
-        return start.toISOString().split('T')[0] === date;
-
-      case 'monthly':
-        return start.getDate() === selected.getDate();
-
-      case 'hebdo':
-        // différence en jours
-        const daysDiff = Math.floor(
-          (+selected - +start) / (1000 * 60 * 60 * 24),
-        );
-        return daysDiff % 7 === 0;
-
-      case 'trimestriel':
-        return (
-          start.getDate() === selected.getDate() &&
-          (selected.getMonth() - start.getMonth()) % 3 === 0
-        );
-
-      case 'yearly':
-        return (
-          start.getDate() === selected.getDate() &&
-          start.getMonth() === selected.getMonth()
-        );
-
-      default:
-        return false;
-    }
-  };
-
-  const filtered = allEvents.filter((event: EventType) =>
-    doesEventOccurOnDate(event, selectedDate),
-  );
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -203,12 +93,12 @@ const Dashboard = () => {
         ) : (
           events.map((event) => (
             <EventCard
-    key={event.id}
-    id={event.id}
-    name={event.name}
-    amount={event.amount}
-    onPress={() => router.push(`/event/${event.id}`)}
-  />
+              key={event.id}
+              id={event.id}
+              name={event.name}
+              amount={event.amount}
+              onPress={() => router.push(`/event/${event.id}`)}
+            />
           ))
         )}
       </ScrollView>

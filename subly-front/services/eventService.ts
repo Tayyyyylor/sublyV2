@@ -62,32 +62,30 @@ export const getOneEvent = async (id: string) => {
     console.error('Erreur de récupération des événements :', error);
     throw error;
   }
-}
+};
 
 export const modifyEvent = async (
-  eventData: EventType,
-  signIn: (token: string) => void,
+  id: string,
+  updateData: Partial<EventType>,
 ) => {
   try {
-    const response = await axiosInstance.post('/events/login', eventData);
-    const token = response.data.access_token;
-    if (!token) throw new Error('Token manquant dans la réponse API');
-    signIn(token);
-    router.replace('/(tabs)');
+    const response = await axiosInstance.patch(`/events/${id}`, updateData);
+    return response.data;
   } catch (error: any) {
     console.error(
-      'Erreur de connexion :',
+      'Erreur de modification :',
       error.response?.data || error.message,
     );
     throw error;
   }
 };
 
-export const deleteEvent = async (signOut: () => void) => {
+export const deleteEvent = async (id: string) => {
   try {
-    signOut();
-    router.replace('/signin');
+    const response = await axiosInstance.delete(`/events/${id}`);
+    return response.data;
   } catch (error) {
-    console.error('Erreur lors de la déconnexion :', error);
+    console.error("Erreur lors de la suppression de l'évènement :", error);
+    throw error;
   }
 };
