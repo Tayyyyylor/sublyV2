@@ -1,11 +1,4 @@
-import {
-  Alert,
-  Button,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Alert, SafeAreaView, View } from 'react-native';
 import Input from '../Input';
 import { useState } from 'react';
 import { registerUser } from '@/services/authService';

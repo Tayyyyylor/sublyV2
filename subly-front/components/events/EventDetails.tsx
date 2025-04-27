@@ -1,21 +1,40 @@
-import { getOneEvent } from '@/services/eventService';
+import { deleteEvent, getOneEvent } from '@/services/eventService';
 import { EventType } from '@/types/global';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, SafeAreaView, Text, View } from 'react-native';
 import DefaultButton from '../DefaultButton';
+import DefaultModal from '../DefaultModal';
 
 const EventDetails = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [event, setEvent] = useState<EventType | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
   console.log('event', event);
 
   const handleClickBack = () => {
     router.back();
   };
 
-  const handleDeleteEvent = () => {};
+  const handleDeleteEvent = async () => {
+    try {
+      await deleteEvent(id as string);
+      Alert.alert('Succès', 'Événement supprimé.');
+      router.replace('/(tabs)');
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible de supprimer l'événement.");
+      console.error('Erreur suppression event :', error);
+    }
+  };
+
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -43,8 +62,15 @@ const EventDetails = () => {
         <Text>{event?.frequency}</Text>
       </View>
       <View>
-        <DefaultButton label="Supprimer event" onPress={handleDeleteEvent} />
+        <DefaultButton label="Supprimer event" onPress={handleOpenModal} />
       </View>
+      {showModal && (
+        <DefaultModal
+          onPressConfirm={handleDeleteEvent}
+          onPressCancel={handleCloseModal}
+          label="Voulez-vous vraiment supprimer cet évènement ?"
+        />
+      )}
     </SafeAreaView>
   );
 };

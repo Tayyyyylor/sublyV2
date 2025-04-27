@@ -83,11 +83,12 @@ export const modifyEvent = async (
   }
 };
 
-export const deleteEvent = async (signOut: () => void) => {
+export const deleteEvent = async (id: string) => {
   try {
-    signOut();
-    router.replace('/signin');
+    const response = await axiosInstance.delete(`/events/${id}`);
+    return response.data;
   } catch (error) {
-    console.error('Erreur lors de la déconnexion :', error);
+    console.error("Erreur lors de la suppression de l'évènement :", error);
+    throw error;
   }
 };

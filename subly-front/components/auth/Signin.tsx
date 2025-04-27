@@ -1,4 +1,4 @@
-import { Alert, SafeAreaView, Text, View } from 'react-native';
+import { Alert, SafeAreaView, View } from 'react-native';
 import Input from '../Input';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';

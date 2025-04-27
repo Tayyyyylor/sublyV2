@@ -10,7 +10,7 @@ interface DefaultButtonProps {
 const DefaultButton = ({ className, label, onPress }: DefaultButtonProps) => {
   return (
     <TouchableOpacity
-      className={`${className} bg-red-400 items-center w-[50%] rounded-[8px] p-3 `}
+      className={`${className} bg-red-400 items-center w-[50%] rounded-[8px] p-4`}
       onPress={onPress}
     >
       <Text className="font-bold">{label}</Text>
