@@ -1,12 +1,5 @@
-import React, { useState } from 'react';
-import {
-  Alert,
-  Modal,
-  Pressable,
-  SafeAreaView,
-  Text,
-  View,
-} from 'react-native';
+import React from 'react';
+import { Modal, Pressable, SafeAreaView, Text, View } from 'react-native';
 
 interface DefaultModalProps {
   onPressConfirm: () => void;

@@ -1,7 +1,6 @@
 import { getAllEvent } from '@/services/eventService';
-import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, SafeAreaView, Text, View } from 'react-native';
+import { Alert, SafeAreaView } from 'react-native';
 
 const Stats = () => {
   const [events, setEvents] = useState<Event[]>([]);

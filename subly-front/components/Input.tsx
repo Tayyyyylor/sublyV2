@@ -35,6 +35,7 @@ const Input = ({
         className={`bg-[white] p-3 w-full border-2 rounded-[5px] relative ${errorMessage ? 'border-red-500' : 'border-black-500'}`}
         placeholder={placeholder}
         value={value}
+        placeholderTextColor="gray"
         onChangeText={onChangeText}
         textContentType="oneTimeCode"
         inputMode={inputMode}

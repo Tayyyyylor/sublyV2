@@ -1,9 +1,11 @@
-import { Alert, SafeAreaView, View } from 'react-native';
-import Input from '../Input';
 import { useState } from 'react';
-import { registerUser } from '@/services/authService';
+import { Alert, SafeAreaView, View } from 'react-native';
 import { useRouter } from 'expo-router';
+
+import { registerUser } from '@/services/authService';
+
 import ButtonAuth from './ButtonAuth';
+import Input from '../Input';
 import Title from '../Title';
 
 const Signup = () => {

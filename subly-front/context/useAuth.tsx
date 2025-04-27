@@ -53,7 +53,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       if (storedToken) {
         try {
           const decoded = jwtDecode<{ exp: number }>(storedToken);
-          const now = Date.now() / 100000;
+          const now = Date.now() / 1000;
           if (decoded.exp < now) {
             console.warn('Token expiré');
             await SecureStore.deleteItemAsync(TOKEN_KEY);

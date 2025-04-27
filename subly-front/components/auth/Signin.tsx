@@ -1,11 +1,13 @@
-import { Alert, SafeAreaView, View } from 'react-native';
-import Input from '../Input';
 import { useState } from 'react';
+import { Alert, SafeAreaView, View } from 'react-native';
 import { useRouter } from 'expo-router';
+
 import { loginUser } from '@/services/authService';
 import { useAuth } from '@/context/useAuth';
+
 import ButtonAuth from './ButtonAuth';
 import Title from '../Title';
+import Input from '../Input';
 
 const Signin = () => {
   const router = useRouter();

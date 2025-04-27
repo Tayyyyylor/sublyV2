@@ -65,18 +65,15 @@ export const getOneEvent = async (id: string) => {
 };
 
 export const modifyEvent = async (
-  eventData: EventType,
-  signIn: (token: string) => void,
+  id: string,
+  updateData: Partial<EventType>,
 ) => {
   try {
-    const response = await axiosInstance.post('/events/login', eventData);
-    const token = response.data.access_token;
-    if (!token) throw new Error('Token manquant dans la réponse API');
-    signIn(token);
-    router.replace('/(tabs)');
+    const response = await axiosInstance.patch(`/events/${id}`, updateData);
+    return response.data;
   } catch (error: any) {
     console.error(
-      'Erreur de connexion :',
+      'Erreur de modification :',
       error.response?.data || error.message,
     );
     throw error;

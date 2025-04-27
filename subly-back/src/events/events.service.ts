@@ -46,8 +46,11 @@ export class EventsService {
     return event;
   }
 
-  async update(id: string, updateEventDto: UpdateEventDto) {
+  async update(id: string, updateEventDto: Partial<UpdateEventDto>) {
     const event = await this.findOneById(id);
+    if (!event) {
+      throw new NotFoundException('Event non trouvé');
+    }
     Object.assign(event, updateEventDto);
     return this.eventsRepository.save(event);
   }
