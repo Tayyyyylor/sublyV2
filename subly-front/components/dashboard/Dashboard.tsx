@@ -11,6 +11,7 @@ import {
   doesEventOccurOnDate,
   generateMarkedDates,
   getDailyTotal,
+  getMonthlyTotal,
 } from './Dashboard.utils';
 
 import EventOverlay from '../events/EventOverlay';
@@ -61,6 +62,10 @@ const Dashboard = () => {
     fetchEvents();
   }, [selectedDate, isOverlayVisible, events]);
 
+  const monthlyTotal = getMonthlyTotal(allEvents);
+
+  console.log('monthlyTotal', monthlyTotal);
+
   return (
     <SafeAreaView className="relative h-full">
       <Text className="font-bold pl-4 mb-[10px] text-[20px] text-blue-700">
@@ -70,6 +75,11 @@ const Dashboard = () => {
         Hello <Text className="text-blue-700">{user?.username}</Text> !
         Bienvenue !
       </Text>
+      <View>
+        <Text className="text-black-700 text-[30px] text-center font-bold">
+          Total au mois <Text className="text-blue-700">{monthlyTotal}€</Text>
+        </Text>
+      </View>
       <View>
         <SaleOfTheDay totalCount={dailyTotal} currency="€" />
       </View>

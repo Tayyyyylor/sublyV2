@@ -120,3 +120,20 @@ export const doesEventOccurOnDate = (
       return false;
   }
 };
+
+export const getMonthlyTotal = (events: EventType[]): number => {
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  return events.reduce((total, event) => {
+    const eventDate = new Date(event.startDate);
+    if (
+      eventDate.getMonth() === currentMonth &&
+      eventDate.getFullYear() === currentYear
+    ) {
+      return total + Number(event.amount);
+    }
+    return total;
+  }, 0);
+};
