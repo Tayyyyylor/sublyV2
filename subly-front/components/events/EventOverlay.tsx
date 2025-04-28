@@ -4,6 +4,7 @@ import {
   Animated,
   Button,
   InputModeOptions,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -77,6 +78,13 @@ const EventOverlay = ({
     });
   };
 
+  const clearFields = () => {
+    setName('');
+    setAmount('');
+    setSelectedFrequency('monthly');
+    setDate(new Date(selectedDate));
+  };
+
   const handleSubmit = async () => {
     if (!name || !amount) {
       Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
@@ -92,6 +100,7 @@ const EventOverlay = ({
       };
       await createEvent(eventData);
       Alert.alert('Succès', 'Event créé avec succès !');
+      clearFields();
       handleClose();
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de se connecter.');
@@ -143,37 +152,39 @@ const EventOverlay = ({
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           className="flex-1"
         >
-          <SafeAreaView>
-            <View className="p-2 gap-5 mb-5">
-              {inputData.map((input, index) => (
-                <Input
-                  key={index}
-                  inputMode={input.inputMode as InputModeOptions}
-                  placeholder={input.placeholder}
-                  onChangeText={input.onChangeText}
-                  value={input.value}
-                />
-              ))}
-            </View>
-            <FrequencyPicker
-              selectedValue={selectedFrequency}
-              onValueChange={(itemValue) => setSelectedFrequency(itemValue)}
-            />
-
-            <View className="flex justify-center items-center">
-              <Text className="text-black font-bold text-[18px] mb-[20px]">
-                Date de début
-              </Text>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                is24Hour={true}
-                onChange={onChange}
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <SafeAreaView>
+              <View className="p-2 gap-5 mb-5">
+                {inputData.map((input, index) => (
+                  <Input
+                    key={index}
+                    inputMode={input.inputMode as InputModeOptions}
+                    placeholder={input.placeholder}
+                    onChangeText={input.onChangeText}
+                    value={input.value}
+                  />
+                ))}
+              </View>
+              <FrequencyPicker
+                selectedValue={selectedFrequency}
+                onValueChange={(itemValue) => setSelectedFrequency(itemValue)}
               />
-            </View>
 
-            <Button title="Add" onPress={handleSubmit} />
-          </SafeAreaView>
+              <View className="flex justify-center items-center">
+                <Text className="text-black font-bold text-[18px] mb-[20px]">
+                  Date de début
+                </Text>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={date}
+                  is24Hour={true}
+                  onChange={onChange}
+                />
+              </View>
+
+              <Button title="Add" onPress={handleSubmit} />
+            </SafeAreaView>
+          </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
       </Animated.View>
     </Animated.View>
