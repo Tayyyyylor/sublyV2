@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 interface InputProps {
-  placeholder: string;
+  placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
   inputMode?: InputModeOptions | undefined;
@@ -16,6 +16,7 @@ interface InputProps {
   showPassword?: boolean;
   togglePassword?: () => void;
   errorMessage?: string;
+  onBlur?: () => void;
 }
 
 const Input = ({

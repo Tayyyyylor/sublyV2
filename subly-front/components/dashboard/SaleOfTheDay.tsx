@@ -11,7 +11,7 @@ const SaleOfTheDay = ({ totalCount, currency }: SaleOfTheDayProps) => {
     <Text className="text-black-700 text-[20px] text-center mt-2 font-bold">
       Dépense prévue ce jour :
       <Text className="text-blue-700">
-        {totalCount}
+        {` ${totalCount}`}
         {currency}
       </Text>
     </Text>

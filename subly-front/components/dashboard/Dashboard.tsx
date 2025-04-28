@@ -47,7 +47,7 @@ const Dashboard = () => {
       try {
         const resp = await getAllEvent();
         setAllEvents(resp);
-        const filtered = allEvents.filter((event: EventType) =>
+        const filtered = resp.filter((event: EventType) =>
           doesEventOccurOnDate(event, selectedDate),
         );
         setEvents(filtered);
@@ -59,7 +59,7 @@ const Dashboard = () => {
     };
 
     fetchEvents();
-  }, [selectedDate, isOverlayVisible]);
+  }, [selectedDate, isOverlayVisible, events]);
 
   return (
     <SafeAreaView className="relative h-full">

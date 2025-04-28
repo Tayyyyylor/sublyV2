@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {
   Alert,
   Button,
+  Keyboard,
   SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -17,6 +19,7 @@ import { EventType, FrequencyType } from '@/types/global';
 import DefaultButton from '../DefaultButton';
 import DefaultModal from '../DefaultModal';
 import FrequencyPicker from '../FrequencyPicker';
+import Input from '../Input';
 
 const EventDetails = () => {
   const { id } = useLocalSearchParams();
@@ -117,24 +120,26 @@ const EventDetails = () => {
         )}
       </View>
 
-      <View className="flex-row items-center gap-2 mt-4">
-        {isEditingAmount ? (
-          <TextInput
-            value={newAmount}
-            onChangeText={setNewAmount}
-            keyboardType="decimal-pad"
-            onBlur={handleModifyEvent}
-            className="text-[20px] text-red-700 text-center border-b border-gray-400 w-[50%]"
-          />
-        ) : (
-          <>
-            <Text className="text-[20px] text-red-700">{event?.amount} €</Text>
-            <TouchableOpacity onPress={() => setIsEditingAmount(true)}>
-              <Ionicons name="pencil" size={20} color="gray" />
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="flex-row items-center gap-2 mt-4">
+          {isEditingAmount ? (
+            <Input
+              value={newAmount}
+              onChangeText={setNewAmount}
+              inputMode="numeric"
+            />
+          ) : (
+            <>
+              <Text className="text-[20px] text-red-700">
+                {event?.amount} €
+              </Text>
+              <TouchableOpacity onPress={() => setIsEditingAmount(true)}>
+                <Ionicons name="pencil" size={20} color="gray" />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
 
       <View className="flex-row items-center gap-2 mt-4">
         {isEditingFrequency ? (
