@@ -3,9 +3,14 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 interface CalendarProps {
   onDayPress: (day: string) => void;
   markedDates: any;
+  onMonthChange?: (date: Date) => void;
 }
 
-const CalendarComponent = ({ onDayPress, markedDates }: CalendarProps) => {
+const CalendarComponent = ({
+  onDayPress,
+  markedDates,
+  onMonthChange,
+}: CalendarProps) => {
   LocaleConfig.locales['fr'] = {
     monthNames: [
       'Janvier',
@@ -58,6 +63,9 @@ const CalendarComponent = ({ onDayPress, markedDates }: CalendarProps) => {
       }}
       onDayPress={onDayPress}
       markedDates={markedDates}
+      onMonthChange={(date: any) =>
+        onMonthChange && onMonthChange(new Date(date.dateString))
+      }
     />
   );
 };

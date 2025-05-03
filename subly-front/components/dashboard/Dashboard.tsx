@@ -31,9 +31,11 @@ const Dashboard = () => {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [allEvents, setAllEvents] = useState<EventType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
   const [_, setIsLoading] = useState(true);
 
   const dailyTotal = getDailyTotal(events);
+  const monthlyTotal = getMonthlyTotal(allEvents, currentMonth);
 
   const openModal = () => {
     setIsOverlayVisible(true);
@@ -41,6 +43,10 @@ const Dashboard = () => {
 
   const closeModal = () => {
     setIsOverlayVisible(false);
+  };
+
+  const handleMonthChange = (date: Date) => {
+    setCurrentMonth(date);
   };
 
   useEffect(() => {
@@ -61,10 +67,6 @@ const Dashboard = () => {
 
     fetchEvents();
   }, [selectedDate, isOverlayVisible, events]);
-
-  const monthlyTotal = getMonthlyTotal(allEvents);
-
-  console.log('monthlyTotal', monthlyTotal);
 
   return (
     <SafeAreaView className="relative h-full">
@@ -89,10 +91,11 @@ const Dashboard = () => {
             setSelectedDate(day.dateString);
           }}
           markedDates={generateMarkedDates(allEvents, selectedDate)}
+          onMonthChange={handleMonthChange}
         />
       </View>
       <ScrollView
-        contentContainerStyle={{ paddingBottom: 100 }} // 👈 évite que le bouton flotte dessus
+        contentContainerStyle={{ paddingBottom: 100 }} //
         showsVerticalScrollIndicator={false}
         className="mt-4 px-4"
       >

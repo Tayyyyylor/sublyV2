@@ -121,19 +121,27 @@ export const doesEventOccurOnDate = (
   }
 };
 
-export const getMonthlyTotal = (events: EventType[]): number => {
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
+export const getMonthlyTotal = (
+  events: EventType[],
+  currentDate: Date,
+): number => {
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
 
-  return events.reduce((total, event) => {
-    const eventDate = new Date(event.startDate);
-    if (
-      eventDate.getMonth() === currentMonth &&
-      eventDate.getFullYear() === currentYear
-    ) {
-      return total + Number(event.amount);
-    }
-    return total;
+  return events.reduce((sum: number, event: EventType) => {
+    // Générer toutes les occurrences de l'événement pour l'année en cours
+    const yearEnd = new Date(currentYear, 11, 31); // 31 décembre de l'année courante
+    const occurrences = generateRecurringDates(event, yearEnd);
+
+    // Filtrer pour garder seulement les occurrences du mois courant
+    const monthlyOccurrences = occurrences.filter((dateStr) => {
+      const date = new Date(dateStr);
+      return (
+        date.getMonth() === currentMonth && date.getFullYear() === currentYear
+      );
+    });
+
+    // Ajouter le montant pour chaque occurrence du mois
+    return sum + monthlyOccurrences.length * Number(event.amount);
   }, 0);
 };
