@@ -33,7 +33,7 @@ const Input = ({
     <View>
       <TextInput
         secureTextEntry={secureTextEntry ? !showPassword : false}
-        className={`bg-[white] p-3 w-full border-2 rounded-[5px] relative ${errorMessage ? 'border-red-500' : 'border-black-500'}`}
+        className={`bg-[white] p-3 w-full border-solid border-2 rounded-[5px] relative ${errorMessage ? 'border-red-500' : 'border-black-500'}`}
         placeholder={placeholder}
         value={value}
         placeholderTextColor="gray"

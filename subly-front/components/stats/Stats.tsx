@@ -1,6 +1,6 @@
 import { getAllEvent } from '@/services/eventService';
 import React, { useEffect, useState } from 'react';
-import { Alert, SafeAreaView } from 'react-native';
+import { Alert, SafeAreaView, Text } from 'react-native';
 
 const Stats = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -24,6 +24,7 @@ const Stats = () => {
   console.log('events', events);
   return (
     <SafeAreaView>
+      <Text className="text-[40px]">Statistiques</Text>
       {/* {isLoading ? (
         <Text>Chargement...</Text>
       ) : (

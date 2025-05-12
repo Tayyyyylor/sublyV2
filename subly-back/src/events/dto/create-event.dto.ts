@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   IsNotEmpty,
   IsEnum,
   IsNumber,
   IsString,
   IsDateString,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateEventDto {
@@ -23,4 +23,8 @@ export class CreateEventDto {
 
   @IsDateString({}, { message: 'Date de début invalide' })
   startDate: string;
+
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
 }

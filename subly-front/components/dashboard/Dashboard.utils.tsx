@@ -68,7 +68,7 @@ export const generateMarkedDates = (
       marked[dateKey] = {
         ...marked[dateKey],
         marked: true,
-        dotColor: 'red',
+        dotColor: '#605BCF',
       };
     });
   });

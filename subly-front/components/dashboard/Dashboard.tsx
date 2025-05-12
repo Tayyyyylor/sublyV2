@@ -70,11 +70,11 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView className="relative h-full">
-      <Text className="font-bold pl-4 mb-[10px] text-[20px] text-blue-700">
+      <Text className="font-bold pl-4 mb-[10px] text-[20px] text-violet-400">
         {date}
       </Text>
       <Text className="text-black-700 text-[30px] text-center font-bold">
-        Hello <Text className="text-blue-700">{user?.username}</Text> !
+        Hello <Text className="text-violet-700">{user?.username}</Text> !
         Bienvenue !
       </Text>
       <View>

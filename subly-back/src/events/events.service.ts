@@ -4,12 +4,15 @@ import { Events } from './events.entity';
 import { Repository } from 'typeorm';
 import { Users } from 'src/users/users.entity';
 import { UpdateEventDto } from './dto/update-event-dto';
+// import { Category } from 'src/categories/category.entity';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectRepository(Events)
     private eventsRepository: Repository<Events>,
+    // @InjectRepository(Category)
+    // private categoryRepository: Repository<Category>,
   ) {}
 
   async create(
@@ -18,13 +21,23 @@ export class EventsService {
     frequency: 'one' | 'hebdo' | 'monthly' | 'trimestriel' | 'yearly',
     startDate: Date,
     creator: Users,
+    // categoryId?: string,
   ) {
+    // const category = categoryId
+    //   ? await this.categoryRepository.findOne({ where: { id: categoryId } })
+    //   : await this.categoryRepository.findOne({ where: { name: 'Autre' } });
+
+    // if (!category) {
+    //   throw new Error('Catégorie invalide ou "Autre" non trouvée.');
+    // }
+
     const event = this.eventsRepository.create({
       name,
       amount,
       frequency,
       startDate,
       creator,
+      // category,
     });
     return this.eventsRepository.save(event);
   }

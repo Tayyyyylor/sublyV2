@@ -51,6 +51,7 @@ export class EventsController {
       createEventDto.frequency,
       startDate,
       user,
+      // createEventDto.categoryId,
     );
   }
 

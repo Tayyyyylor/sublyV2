@@ -27,7 +27,6 @@ export default function TabLayout() {
         headerShown: false,
         tabBarIcon: ({ color, focused, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'help';
-
           if (route.name === 'index') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'settings') {
@@ -35,7 +34,6 @@ export default function TabLayout() {
           } else if (route.name === 'stats') {
             iconName = focused ? 'bar-chart' : 'bar-chart-outline';
           }
-
           return <Ionicons name={iconName} size={20} color={color} />;
         },
       })}

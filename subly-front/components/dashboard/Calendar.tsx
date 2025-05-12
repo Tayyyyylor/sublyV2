@@ -58,8 +58,8 @@ const CalendarComponent = ({
       theme={{
         textDayFontFamily: 'Inter-Medium',
         textMonthFontFamily: 'Inter-Bold',
-        todayTextColor: 'red',
-        selectedDayBackgroundColor: 'red',
+        todayTextColor: '#1B9AAA',
+        selectedDayBackgroundColor: '#1B9AAA',
       }}
       onDayPress={onDayPress}
       markedDates={markedDates}
