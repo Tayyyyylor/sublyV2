@@ -6,7 +6,7 @@ const Settings = () => {
   const { signOut } = useAuth();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-slate-900">
       <Text>Settings</Text>
 
       <Button title="Se déconnecter" color="red" onPress={signOut} />

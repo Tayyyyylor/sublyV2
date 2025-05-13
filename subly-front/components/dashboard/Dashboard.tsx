@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { format } from 'date-fns';
 
@@ -19,6 +19,7 @@ import EventCard from '../events/EventCard';
 import ButtonAdd from '../events/ButtonAdd';
 import CalendarComponent from './Calendar';
 import SaleOfTheDay from './SaleOfTheDay';
+import { Text } from '../Text';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -69,23 +70,23 @@ const Dashboard = () => {
   }, [selectedDate, isOverlayVisible, events]);
 
   return (
-    <SafeAreaView className="relative h-full">
+    <SafeAreaView className="relative h-full bg-slate-900">
       <Text className="font-bold pl-4 mb-[10px] text-[20px] text-violet-400">
         {date}
       </Text>
-      <Text className="text-black-700 text-[30px] text-center font-bold">
-        Hello <Text className="text-violet-700">{user?.username}</Text> !
+      <Text className="text-[30px] text-center font-bold text-white">
+        Hello <Text className="text-violet-400">{user?.username}</Text> !
         Bienvenue !
       </Text>
       <View>
-        <Text className="text-black-700 text-[30px] text-center font-bold">
-          Total au mois <Text className="text-blue-700">{monthlyTotal}€</Text>
+        <Text className="text-[30px] text-center font-bold text-white">
+          Total au mois <Text className="text-violet-400">{monthlyTotal}€</Text>
         </Text>
       </View>
-      <View>
+      <View className="mb-9">
         <SaleOfTheDay totalCount={dailyTotal} currency="€" />
       </View>
-      <View className="p-[10px]">
+      <View className="p-[10px] bg-blue-900">
         <CalendarComponent
           onDayPress={(day: any) => {
             setSelectedDate(day.dateString);

@@ -1,5 +1,5 @@
 import { Redirect, Tabs } from 'expo-router';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '@/context/useAuth';
 import '../../global.css';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -22,10 +22,12 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={({ route }) => ({
-        tabBarActiveTintColor: 'orange',
+        tabBarStyle: { backgroundColor: styles.container.backgroundColor },
+        contentStyle: { backgroundColor: styles.container.backgroundColor },
+        tabBarActiveTintColor: '#001f3f',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
-        tabBarIcon: ({ color, focused, size }) => {
+        tabBarIcon: ({ color, focused }) => {
           let iconName: keyof typeof Ionicons.glyphMap = 'help';
           if (route.name === 'index') {
             iconName = focused ? 'home' : 'home-outline';
@@ -44,3 +46,16 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  containerCentered: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

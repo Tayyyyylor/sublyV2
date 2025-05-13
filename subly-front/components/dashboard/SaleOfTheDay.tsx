@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text } from '../Text';
 
 interface SaleOfTheDayProps {
   totalCount?: number;
@@ -8,9 +8,9 @@ interface SaleOfTheDayProps {
 
 const SaleOfTheDay = ({ totalCount, currency }: SaleOfTheDayProps) => {
   return (
-    <Text className="text-black-700 text-[20px] text-center mt-2 font-bold">
+    <Text className="text-white text-[20px] text-center mt-2 font-bold">
       Dépense prévue ce jour :
-      <Text className="text-blue-700">
+      <Text className="text-violet-400">
         {` ${totalCount}`}
         {currency}
       </Text>

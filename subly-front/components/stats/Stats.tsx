@@ -23,7 +23,7 @@ const Stats = () => {
 
   console.log('events', events);
   return (
-    <SafeAreaView>
+    <SafeAreaView className="bg-slate-900">
       <Text className="text-[40px]">Statistiques</Text>
       {/* {isLoading ? (
         <Text>Chargement...</Text>
