@@ -46,7 +46,7 @@ const Dashboard = () => {
     setIsOverlayVisible(false);
   };
 
-  const handleMonthChange = (date: Date) => {
+  const handleMonthChange: (date: Date) => void = (date: Date) => {
     setCurrentMonth(date);
   };
 

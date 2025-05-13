@@ -14,8 +14,12 @@ const EventCard = ({ name, amount, onPress }: EventProps) => {
       className="p-3 mb-2 bg-blue-100 rounded-lg"
       onPress={onPress}
     >
-      <Text className="font-bold text-blue-700">{name}</Text>
-      <Text className="text-sm text-gray-700">{amount} €</Text>
+      <Text className="font-bold text-slate-700 text-[18px] capitalize">
+        {name}
+      </Text>
+      <Text className="text-sm text-blue-500 text-[14px] font-bold">
+        {amount} €
+      </Text>
     </TouchableOpacity>
   );
 };

@@ -142,7 +142,7 @@ const EventOverlay = ({
       </TouchableWithoutFeedback>
 
       <Animated.View
-        className="absolute bottom-0 w-full bg-white rounded-t-3xl p-6"
+        className="absolute bottom-0 w-full bg-slate-900 rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
           maxHeight: '80%', // Limite à 80% de la hauteur
@@ -150,10 +150,10 @@ const EventOverlay = ({
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1"
+          className="flex-1 "
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <SafeAreaView>
+            <SafeAreaView className="bg-slate-900">
               <View className="p-2 gap-5 mb-5">
                 {inputData.map((input, index) => (
                   <Input

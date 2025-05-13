@@ -106,17 +106,17 @@ const EventDetails = () => {
             value={newName}
             onChangeText={setNewName}
             onBlur={handleModifyEvent}
-            className="text-[30px] font-bold text-center border-b border-gray-400 w-[70%]"
+            className="text-[30px] font-bold text-center border-b border-gray-400 w-[70%] text-white"
           />
         ) : (
-          <>
-            <Text className="text-[30px] font-bold text-center">
+          <View className="">
+            <Text className="text-[30px] font-bold text-center text-white capitalize w-[100%]">
               {event?.name}
             </Text>
             <TouchableOpacity onPress={() => setIsEditingName(true)}>
               <Ionicons name="pencil" size={20} color="gray" />
             </TouchableOpacity>
-          </>
+          </View>
         )}
       </View>
 
@@ -130,9 +130,7 @@ const EventDetails = () => {
             />
           ) : (
             <>
-              <Text className="text-[20px] text-red-700">
-                {event?.amount} €
-              </Text>
+              <Text className="text-[20px] text-white">{event?.amount} €</Text>
               <TouchableOpacity onPress={() => setIsEditingAmount(true)}>
                 <Ionicons name="pencil" size={20} color="gray" />
               </TouchableOpacity>
@@ -155,9 +153,9 @@ const EventDetails = () => {
           </View>
         ) : (
           <>
-            <Text>{event?.frequency}</Text>
+            <Text className="text-white">{event?.frequency}</Text>
             <TouchableOpacity onPress={() => setIsEditingFrequency(true)}>
-              <Ionicons name="pencil" size={16} color="gray" />
+              <Ionicons name="pencil" size={16} color="white" />
             </TouchableOpacity>
           </>
         )}
