@@ -145,7 +145,7 @@ const EventOverlay = ({
         className="absolute bottom-0 w-full bg-slate-900 rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
-          maxHeight: '80%', // Limite à 80% de la hauteur
+          maxHeight: '80%', 
         }}
       >
         <KeyboardAvoidingView
@@ -171,10 +171,14 @@ const EventOverlay = ({
               />
 
               <View className="flex justify-center items-center">
-                <Text className="text-black font-bold text-[18px] mb-[20px]">
+                <Text className="text-white font-bold text-[18px] mb-[20px]">
                   Date de début
                 </Text>
                 <DateTimePicker
+                  className='text-white'
+                  textColor='white'
+                  themeVariant="light"
+                  accentColor="white"
                   testID="dateTimePicker"
                   value={date}
                   is24Hour={true}

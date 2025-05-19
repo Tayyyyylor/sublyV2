@@ -1,7 +1,8 @@
-// import { Events } from 'src/events/events.entity';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+// src/categories/category.entity.ts
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Events } from 'src/events/events.entity';
 
-@Entity()
+@Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -9,6 +10,9 @@ export class Category {
   @Column({ unique: true })
   name: string;
 
-  //   @OneToMany(() => Events, (event) => event.category)
-  //   events: Events[];
+  @Column()
+  icon: string;
+
+  @OneToMany(() => Events, (event) => event.category)
+  events: Events[];
 }

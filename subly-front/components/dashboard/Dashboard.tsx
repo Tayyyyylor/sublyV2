@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, SafeAreaView, ScrollView, View } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { format } from 'date-fns';
 
@@ -19,7 +19,6 @@ import EventCard from '../events/EventCard';
 import ButtonAdd from '../events/ButtonAdd';
 import CalendarComponent from './Calendar';
 import SaleOfTheDay from './SaleOfTheDay';
-import { Text } from '../Text';
 
 const Dashboard = () => {
   const { user } = useAuth();
