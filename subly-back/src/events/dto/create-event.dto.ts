@@ -1,14 +1,17 @@
 import {
-  IsNotEmpty,
   IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsString,
-  IsDateString,
-  IsOptional,
+  IsUUID,
 } from 'class-validator';
+import { EventType } from '../event.entity';
 
 export class CreateEventDto {
   @IsNotEmpty({ message: 'Le nom est obligatoire' })
+  @IsEnum(EventType, { message: 'Le type doit être EXPENSE ou INCOME' })
+  type: EventType;
+
   @IsString()
   name: string;
 
@@ -16,15 +19,11 @@ export class CreateEventDto {
   @IsNumber()
   amount: number;
 
-  @IsEnum(['one', 'hebdo', 'monthly', 'trimestriel', 'yearly'], {
-    message: 'Fréquence invalide',
-  })
-  frequency: 'one' | 'hebdo' | 'monthly' | 'trimestriel' | 'yearly';
+  @IsNotEmpty()
+  @IsUUID()
+  categoryId: string;
 
-  @IsDateString({}, { message: 'Date de début invalide' })
-  startDate: string;
-
-  @IsOptional()
-  @IsString()
-  categoryId?: string;
+  @IsNotEmpty()
+  @IsUUID()
+  recurrenceId: string;
 }

@@ -6,14 +6,14 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
-import { EventsService } from './events.service';
+import { EventsService } from './event.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UpdateEventDto } from './dto/update-event-dto';
-import { Request } from 'express';
 import { CreateEventDto } from './dto/create-event.dto';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/users/user.entity';
 
 @Controller('events')
 export class EventsController {
@@ -33,26 +33,8 @@ export class EventsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(
-    @Req() req: Request,
-    @Body()
-    createEventDto: CreateEventDto,
-  ) {
-    const startDate =
-      typeof createEventDto.startDate === 'string'
-        ? new Date(createEventDto.startDate)
-        : createEventDto.startDate;
-
-    const user = req.user;
-
-    return this.eventsService.create(
-      createEventDto.name,
-      createEventDto.amount,
-      createEventDto.frequency,
-      startDate,
-      user,
-      // createEventDto.categoryId,
-    );
+  create(@GetUser() user: User, @Body() dto: CreateEventDto) {
+    return this.eventsService.create(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
