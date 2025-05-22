@@ -7,6 +7,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   Text,
   TouchableWithoutFeedback,
@@ -15,10 +16,12 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { createEvent } from '@/services/eventService';
-import { FrequencyType } from '@/types/global';
+import { CategoryType, FrequencyType, TransacType } from '@/types/global';
 
 import Input from '../Input';
 import FrequencyPicker from '../FrequencyPicker';
+import { getAllCategories } from '@/services/categoryService';
+import CategoryPicker from '../CategoryPicker';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -32,10 +35,15 @@ const EventOverlay = ({
 }: EventOverlayProps) => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(0));
+  const [allCategories, setAllCategories] = useState<CategoryType[]>([]);
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<string>('');
+  const [_, setIsLoading] = useState(true);
   const [selectedFrequency, setSelectedFrequency] =
-    useState<FrequencyType>('monthly');
+    useState<FrequencyType>('MONTHLY');
+  const [selectedCategory, setSelectedCategory] =
+    useState<FrequencyType>('MONTHLY');
+  const [selectedType, setSelectedType] = useState<TransacType>('EXPENSE');
 
   const [date, setDate] = useState<Date>(new Date(selectedDate));
   const inputData = [
@@ -81,7 +89,7 @@ const EventOverlay = ({
   const clearFields = () => {
     setName('');
     setAmount('');
-    setSelectedFrequency('monthly');
+    setSelectedFrequency('MONTHLY');
     setDate(new Date(selectedDate));
   };
 
@@ -106,6 +114,21 @@ const EventOverlay = ({
       Alert.alert('Erreur', 'Impossible de se connecter.');
     }
   };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const resp = await getAllCategories();
+        setAllCategories(resp);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de se connecter.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   useEffect(() => {
     if (isVisible) {
@@ -135,6 +158,13 @@ const EventOverlay = ({
     }
   }, [isVisible, selectedDate]);
 
+  const handleClickIncome = () => {
+    setSelectedType('INCOME');
+  };
+  const handleClickExpense = () => {
+    setSelectedType('EXPENSE');
+  };
+
   return (
     <Animated.View className="absolute inset-0" style={{ opacity: fadeAnim }}>
       <TouchableWithoutFeedback onPress={handleClose}>
@@ -145,7 +175,7 @@ const EventOverlay = ({
         className="absolute bottom-0 w-full bg-slate-900 rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
-          maxHeight: '80%', 
+          maxHeight: '100%',
         }}
       >
         <KeyboardAvoidingView
@@ -165,9 +195,34 @@ const EventOverlay = ({
                   />
                 ))}
               </View>
+              <View className="flex-row gap-3 items-center w-[100%]">
+                <Pressable
+                  className={`p-3 flex-1 ${
+                    selectedType === 'EXPENSE' ? 'bg-red-500' : 'bg-transparent'
+                  }`}
+                  onPress={handleClickExpense}
+                >
+                  <Text className="text-white text-center">Dépenses</Text>
+                </Pressable>
+                <Pressable
+                  className={`p-3 flex-1 ${
+                    selectedType === 'INCOME'
+                      ? 'bg-green-500'
+                      : 'bg-transparent'
+                  }`}
+                  onPress={handleClickIncome}
+                >
+                  <Text className="text-white text-center">Revenus</Text>
+                </Pressable>
+              </View>
               <FrequencyPicker
                 selectedValue={selectedFrequency}
                 onValueChange={(itemValue) => setSelectedFrequency(itemValue)}
+              />
+
+              <CategoryPicker
+                selectedValue={selectedCategory}
+                onValueChange={(itemValue) => setSelectedCategory(itemValue)}
               />
 
               <View className="flex justify-center items-center">
@@ -175,8 +230,8 @@ const EventOverlay = ({
                   Date de début
                 </Text>
                 <DateTimePicker
-                  className='text-white'
-                  textColor='white'
+                  className="text-white"
+                  textColor="white"
                   themeVariant="light"
                   accentColor="white"
                   testID="dateTimePicker"

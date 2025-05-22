@@ -20,12 +20,12 @@ async function bootstrapSeed() {
   ];
 
   // 2) Les récurrences prédéfinies (startDate = aujourd’hui)
-  const today = new Date();
   const recurrences = [
-    { frequency: Frequency.DAILY, startDate: today },
-    { frequency: Frequency.WEEKLY, startDate: today },
-    { frequency: Frequency.MONTHLY, startDate: today },
-    { frequency: Frequency.YEARLY, startDate: today },
+    { frequency: Frequency.DAILY },
+    { frequency: Frequency.WEEKLY },
+    { frequency: Frequency.MONTHLY },
+    { frequency: Frequency.QUARTERLY },
+    { frequency: Frequency.YEARLY },
   ];
 
   // Seed catégories

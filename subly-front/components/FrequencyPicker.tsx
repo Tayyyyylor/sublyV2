@@ -13,13 +13,13 @@ const FrequencyPicker = ({ selectedValue, onValueChange }: PickerProps) => {
       onValueChange={(itemValue) => {
         onValueChange(itemValue);
       }}
-      style={{color: "white"}}
+      style={{ color: 'white' }}
     >
-      <Picker.Item label="Une fois" value="one" />
-      <Picker.Item label="Hebdomadaire" value="hebdo" />
-      <Picker.Item label="Mensuel" value="monthly" />
-      <Picker.Item label="Trimestriel" value="trimestriel" />
-      <Picker.Item label="Annuel" value="yearly" />
+      <Picker.Item label="Une fois" value="DAILY" />
+      <Picker.Item label="Hebdomadaire" value="WEEKLY" />
+      <Picker.Item label="Mensuel" value="MONTHLY" />
+      <Picker.Item label="Trimestriel" value="QUARTERLY" />
+      <Picker.Item label="Annuel" value="YEARLY" />
     </Picker>
   );
 };

@@ -1,9 +1,9 @@
 export type FrequencyType =
-  | 'one'
-  | 'hebdo'
-  | 'monthly'
-  | 'trimestriel'
-  | 'yearly';
+  | 'DAILY'
+  | 'WEEKLY'
+  | 'MONTHLY'
+  | 'QUARTERLY'
+  | 'YEARLY';
 
 export type EventType = {
   id: string;
@@ -13,3 +13,11 @@ export type EventType = {
   startDate: Date;
   endDate?: Date;
 };
+
+export type CategoryType = {
+  id: string;
+  name: string;
+  icon: string;
+};
+
+export type TransacType = 'EXPENSE' | 'INCOME';

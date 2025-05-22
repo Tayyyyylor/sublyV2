@@ -66,7 +66,7 @@ const Dashboard = () => {
     };
 
     fetchEvents();
-  }, [selectedDate, isOverlayVisible, events]);
+  }, [selectedDate, isOverlayVisible]);
 
   return (
     <SafeAreaView className="relative h-full bg-slate-900">
