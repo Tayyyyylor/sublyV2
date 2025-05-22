@@ -1,43 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Events } from './events.entity';
 import { Repository } from 'typeorm';
-import { Users } from 'src/users/users.entity';
 import { UpdateEventDto } from './dto/update-event-dto';
-// import { Category } from 'src/categories/category.entity';
+import { Event } from './event.entity';
+import { User } from 'src/users/user.entity';
+import { CreateEventDto } from './dto/create-event.dto';
 
 @Injectable()
 export class EventsService {
   constructor(
-    @InjectRepository(Events)
-    private eventsRepository: Repository<Events>,
-    // @InjectRepository(Category)
-    // private categoryRepository: Repository<Category>,
+    @InjectRepository(Event)
+    private eventsRepository: Repository<Event>,
   ) {}
 
-  async create(
-    name: string,
-    amount: number,
-    frequency: 'one' | 'hebdo' | 'monthly' | 'trimestriel' | 'yearly',
-    startDate: Date,
-    creator: Users,
-    // categoryId?: string,
-  ) {
-    // const category = categoryId
-    //   ? await this.categoryRepository.findOne({ where: { id: categoryId } })
-    //   : await this.categoryRepository.findOne({ where: { name: 'Autre' } });
-
-    // if (!category) {
-    //   throw new Error('Catégorie invalide ou "Autre" non trouvée.');
-    // }
-
+  async create(dto: CreateEventDto, user: User) {
     const event = this.eventsRepository.create({
-      name,
-      amount,
-      frequency,
-      startDate,
-      creator,
-      // category,
+      ...dto,
+      userId: user.id,
+      user,
     });
     return this.eventsRepository.save(event);
   }
@@ -46,10 +26,10 @@ export class EventsService {
     return this.eventsRepository.find();
   }
 
-  async findOneById(id: string): Promise<Events> {
+  async findOneById(id: string): Promise<Event> {
     const event = await this.eventsRepository.findOne({
       where: { id },
-      relations: ['creator'],
+      relations: ['user'],
     });
 
     if (!event) {
