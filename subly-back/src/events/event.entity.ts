@@ -33,6 +33,16 @@ export class Event {
   @Column('decimal', { precision: 10, scale: 2 })
   amount: number;
 
+  @Column({
+    type: 'timestamptz',
+    nullable: false,
+    default: () => 'NOW()',
+  })
+  startDate: Date;
+
+  @Column('timestamptz', { nullable: true })
+  endDate?: Date;
+
   @Column('uuid')
   recurrenceId: string;
 

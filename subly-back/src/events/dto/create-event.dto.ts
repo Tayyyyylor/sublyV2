@@ -1,10 +1,13 @@
 import {
+  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { EventType } from '../event.entity';
 
 export class CreateEventDto {
@@ -18,6 +21,16 @@ export class CreateEventDto {
   @IsNotEmpty({ message: 'Le montant est obligatoire' })
   @IsNumber()
   amount: number;
+
+  @IsNotEmpty({ message: 'La date de début est obligatoire' })
+  @Type(() => Date)
+  @IsDate({ message: 'Date de début invalide' })
+  startDate: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate({ message: 'Date de fin invalide' })
+  endDate?: Date;
 
   @IsNotEmpty()
   @IsUUID()

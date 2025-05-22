@@ -14,17 +14,11 @@ export class Recurrence {
   id: string;
 
   @Column({
-    default: 'MONTHLY',
+    default: Frequency.MONTHLY,
     type: 'enum',
     enum: Frequency,
   })
   frequency: Frequency;
-
-  @Column('timestamptz')
-  startDate: Date;
-
-  @Column('timestamptz', { nullable: true })
-  endDate?: Date;
 
   @OneToMany(() => Event, (e) => e.recurrence)
   events: Event[];

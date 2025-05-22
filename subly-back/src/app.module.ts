@@ -22,6 +22,6 @@ import { RecurrenceModule } from './recurrence/recurrence.module';
 })
 export class AppModule implements OnModuleInit {
   onModuleInit() {
-    console.log('✅ Database connection established successfully!');
+    console.log(' Database connection established successfully!');
   }
 }
