@@ -1,15 +1,15 @@
-export type FrequencyType =
-  | 'DAILY'
-  | 'WEEKLY'
-  | 'MONTHLY'
-  | 'QUARTERLY'
-  | 'YEARLY';
+export type FrequencyType = {
+  id: string;
+  frequency: string;
+};
 
 export type EventType = {
   id: string;
   name: string;
   amount: number;
-  frequency: Frequency;
+  type: TransacType;
+  recurrenceId: string;
+  categoryId: string;
   startDate: Date;
   endDate?: Date;
 };

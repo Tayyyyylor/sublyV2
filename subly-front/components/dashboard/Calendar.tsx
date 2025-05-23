@@ -2,7 +2,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 interface CalendarProps {
   onDayPress: (day: string) => void;
-  markedDates: any;
+  markedDates?: any;
   onMonthChange?: (date: Date) => void;
 }
 

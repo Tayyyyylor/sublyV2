@@ -1,51 +1,79 @@
-import { EventType } from '@/types/global';
+import { EventType, FrequencyType } from '@/types/global';
+import {
+  format,
+  addDays,
+  addWeeks,
+  addMonths,
+  addYears,
+  isBefore,
+  isSameMonth,
+} from 'date-fns';
 
 export const getDailyTotal = (events: EventType[]) => {
   return events.reduce((sum: number, event: EventType) => {
-    return sum + Number(event.amount);
+    const amount = Number(event.amount);
+    return sum + (event.type === 'EXPENSE' ? -amount : amount);
   }, 0);
 };
 
-export const generateRecurringDates = (
+export const doesEventOccurOnDate = (
   event: EventType,
-  selectedLimit?: Date,
-): string[] => {
-  const occurrences: string[] = [];
-  const start = new Date(event.startDate);
-  const limit = event.endDate
-    ? new Date(event.endDate)
-    : (selectedLimit ?? new Date());
+  targetDate: string,
+  frequency: string,
+): boolean => {
+  const eventStartDate = new Date(event.startDate);
+  const targetDateObj = new Date(targetDate);
+  const endDate = event.endDate ? new Date(event.endDate) : undefined;
 
-  if (!event.frequency || event.frequency === 'one') {
-    occurrences.push(start.toISOString().split('T')[0]);
-    return occurrences;
+  if (isBefore(targetDateObj, eventStartDate)) {
+    return false;
   }
 
-  let current = new Date(start);
-  while (current <= limit) {
-    occurrences.push(current.toISOString().split('T')[0]);
+  if (endDate && isBefore(endDate, targetDateObj)) {
+    return false;
+  }
 
-    switch (event.frequency) {
-      case 'monthly':
-        current.setMonth(current.getMonth() + 1);
+  const formatDate = (date: Date) => format(date, 'yyyy-MM-dd');
+  const targetDateStr = formatDate(targetDateObj);
+  const startDateStr = formatDate(eventStartDate);
+
+  if (targetDateStr === startDateStr) {
+    return true;
+  }
+
+  let currentDate = eventStartDate;
+  while (isBefore(currentDate, targetDateObj)) {
+    switch (frequency) {
+      case 'DAILY':
+        currentDate = addDays(currentDate, 1);
         break;
-      case 'hebdo':
-        current.setDate(current.getDate() + 7);
+      case 'WEEKLY':
+        currentDate = addWeeks(currentDate, 1);
         break;
-      case 'trimestriel':
-        current.setMonth(current.getMonth() + 3);
+      case 'MONTHLY':
+        currentDate = addMonths(currentDate, 1);
         break;
-      case 'yearly':
-        current.setFullYear(current.getFullYear() + 1);
+      case 'QUARTERLY':
+        currentDate = addMonths(currentDate, 3);
         break;
+      case 'YEARLY':
+        currentDate = addYears(currentDate, 1);
+        break;
+      default:
+        return false;
+    }
+
+    if (formatDate(currentDate) === targetDateStr) {
+      return true;
     }
   }
 
-  return occurrences;
+  return false;
 };
 
 export const generateMarkedDates = (
   events: EventType[],
+  recurrences: FrequencyType[],
   selectedDate: string,
 ) => {
   const marked: Record<
@@ -58,90 +86,101 @@ export const generateMarkedDates = (
     }
   > = {};
 
-  const horizon = new Date();
-  horizon.setFullYear(horizon.getFullYear() + 1); // 1 an d’avance
+  marked[selectedDate] = {
+    selected: true,
+    selectedColor: '#7c3aed', // violet-600
+  };
 
   events.forEach((event) => {
-    const recurringDates = generateRecurringDates(event, horizon);
+    const recurrence = recurrences.find((r) => r.id === event.recurrenceId);
+    if (!recurrence) return;
 
-    recurringDates.forEach((dateKey) => {
-      marked[dateKey] = {
-        ...marked[dateKey],
-        marked: true,
-        dotColor: '#605BCF',
-      };
-    });
+    const startDate = new Date(event.startDate);
+    const endDate =
+      event.endDate ||
+      new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+
+    let currentDate = startDate;
+    while (isBefore(currentDate, endDate)) {
+      const dateKey = format(currentDate, 'yyyy-MM-dd');
+
+      if (marked[dateKey]?.selected) {
+        marked[dateKey] = {
+          ...marked[dateKey],
+          marked: true,
+          dotColor: '#ef4444',
+        };
+      } else {
+        marked[dateKey] = {
+          marked: true,
+          dotColor: '#ef4444',
+        };
+      }
+
+      switch (recurrence.frequency) {
+        case 'DAILY':
+          currentDate = addDays(currentDate, 1);
+          break;
+        case 'WEEKLY':
+          currentDate = addWeeks(currentDate, 1);
+          break;
+        case 'MONTHLY':
+          currentDate = addMonths(currentDate, 1);
+          break;
+        case 'QUARTERLY':
+          currentDate = addMonths(currentDate, 3);
+          break;
+        case 'YEARLY':
+          currentDate = addYears(currentDate, 1);
+          break;
+      }
+    }
   });
-
-  marked[selectedDate] = {
-    ...marked[selectedDate],
-    selected: true,
-    selectedColor: 'blue',
-  };
 
   return marked;
 };
 
-export const doesEventOccurOnDate = (
-  event: EventType,
-  date: string,
-): boolean => {
-  const start = new Date(event.startDate);
-  const selected = new Date(date);
-
-  // Si l'événement est avant la date sélectionnée
-  if (start > selected) return false;
-
-  switch (event.frequency) {
-    case 'one':
-      return start.toISOString().split('T')[0] === date;
-
-    case 'monthly':
-      return start.getDate() === selected.getDate();
-
-    case 'hebdo':
-      // différence en jours
-      const daysDiff = Math.floor((+selected - +start) / (1000 * 60 * 60 * 24));
-      return daysDiff % 7 === 0;
-
-    case 'trimestriel':
-      const monthsDiff =
-        (selected.getFullYear() - start.getFullYear()) * 12 +
-        (selected.getMonth() - start.getMonth());
-      return start.getDate() === selected.getDate() && monthsDiff % 3 === 0;
-
-    case 'yearly':
-      return (
-        start.getDate() === selected.getDate() &&
-        start.getMonth() === selected.getMonth()
-      );
-
-    default:
-      return false;
-  }
-};
-
 export const getMonthlyTotal = (
   events: EventType[],
-  currentDate: Date,
+  currentMonth: Date,
+  recurrences: FrequencyType[],
 ): number => {
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
+  return events.reduce((total, event) => {
+    const recurrence = recurrences.find((r) => r.id === event.recurrenceId);
+    if (!recurrence) return total;
 
-  return events.reduce((sum: number, event: EventType) => {
-    // Générer toutes les occurrences de l'événement pour l'année en cours
-    const yearEnd = new Date(currentYear, 11, 31); // 31 décembre de l'année courante
-    const occurrences = generateRecurringDates(event, yearEnd);
+    const startDate = new Date(event.startDate);
+    const endDate =
+      event.endDate ||
+      new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    let currentDate = startDate;
+    let monthlyAmount = 0;
 
-    // Filtrer pour garder seulement les occurrences du mois courant
-    const monthlyOccurrences = occurrences.filter((dateStr) => {
-      const date = new Date(dateStr);
-      return (
-        date.getMonth() === currentMonth && date.getFullYear() === currentYear
-      );
-    });
+    while (isBefore(currentDate, endDate)) {
+      if (isSameMonth(currentDate, currentMonth)) {
+        monthlyAmount +=
+          Number(event.amount) * (event.type === 'EXPENSE' ? -1 : 1);
+      }
 
-    // Ajouter le montant pour chaque occurrence du mois
-    return sum + monthlyOccurrences.length * Number(event.amount);
+      switch (recurrence.frequency) {
+        case 'DAILY':
+          currentDate = addDays(currentDate, 1);
+          break;
+        case 'WEEKLY':
+          currentDate = addWeeks(currentDate, 1);
+          break;
+        case 'MONTHLY':
+          currentDate = addMonths(currentDate, 1);
+          break;
+        case 'QUARTERLY':
+          currentDate = addMonths(currentDate, 3);
+          break;
+        case 'YEARLY':
+          currentDate = addYears(currentDate, 1);
+          break;
+      }
+    }
+
+    return total + monthlyAmount;
   }, 0);
 };

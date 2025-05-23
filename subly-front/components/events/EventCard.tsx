@@ -1,24 +1,26 @@
+import { EventType } from '@/types/global';
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
 interface EventProps {
   id: string;
-  name: string;
-  amount: number;
+  data: EventType;
   onPress: () => void;
 }
 
-const EventCard = ({ name, amount, onPress }: EventProps) => {
+const EventCard = ({ data, onPress }: EventProps) => {
   return (
     <TouchableOpacity
-      className="p-3 mb-2 bg-blue-100 rounded-lg"
+      className={`${data?.type === 'EXPENSE' ? 'bg-red-100' : 'bg-green-100'} p-3 mb-2 rounded-lg`}
       onPress={onPress}
     >
-      <Text className="font-bold text-slate-700 text-[18px] capitalize">
-        {name}
+      <Text className="font-bold text-black text-[18px] capitalize">
+        {data.name}
       </Text>
-      <Text className="text-sm text-blue-500 text-[14px] font-bold">
-        {amount} €
+      <Text
+        className={`${data?.type === 'EXPENSE' ? 'text-red-900' : 'text-green-900'} text-sm text-[14px] font-bold`}
+      >
+        {data.amount}€
       </Text>
     </TouchableOpacity>
   );

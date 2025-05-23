@@ -1,6 +1,7 @@
 import { FrequencyType } from '@/types/global';
 import axiosInstance from '../helpers/axiosInstance';
 import { router } from 'expo-router';
+import { CreateEventPayload } from '@/types/event';
 
 interface EventType {
   name: string;
@@ -16,7 +17,7 @@ const formatDateToUtcMidnight = (date: Date) => {
   return `${year}-${month}-${day}T00:00:00.000Z`;
 };
 
-export const createEvent = async (eventData: EventType) => {
+export const createEvent = async (eventData: CreateEventPayload) => {
   try {
     const eventPayload = {
       ...eventData,

@@ -1,4 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+import { createEvent } from '@/services/eventService';
+import { getAllCategories } from '@/services/categoryService';
+import { getAllRecurrences } from '@/services/recurrenceService';
+
+import { CategoryType, FrequencyType, TransacType } from '@/types/global';
+
+import Input from '../Input';
+import FrequencyPicker from '../FrequencyPicker';
+import CategoryPicker from '../CategoryPicker';
+
 import {
   Alert,
   Animated,
@@ -9,19 +21,11 @@ import {
   Platform,
   Pressable,
   SafeAreaView,
+  ScrollView,
   Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-
-import { createEvent } from '@/services/eventService';
-import { CategoryType, FrequencyType, TransacType } from '@/types/global';
-
-import Input from '../Input';
-import FrequencyPicker from '../FrequencyPicker';
-import { getAllCategories } from '@/services/categoryService';
-import CategoryPicker from '../CategoryPicker';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -35,17 +39,23 @@ const EventOverlay = ({
 }: EventOverlayProps) => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(0));
+  const [_, setIsLoading] = useState(true);
+
   const [allCategories, setAllCategories] = useState<CategoryType[]>([]);
+  const [allRecurrences, setAllRecurrences] = useState<FrequencyType[]>([]);
+
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<string>('');
-  const [_, setIsLoading] = useState(true);
-  const [selectedFrequency, setSelectedFrequency] =
-    useState<FrequencyType>('MONTHLY');
-  const [selectedCategory, setSelectedCategory] =
-    useState<FrequencyType>('MONTHLY');
   const [selectedType, setSelectedType] = useState<TransacType>('EXPENSE');
-
   const [date, setDate] = useState<Date>(new Date(selectedDate));
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  const [selectedRecurrenceId, setSelectedRecurrenceId] = useState<string>('');
+
+  console.log('allCategories', allCategories);
+  console.log('selectedCategoryId', selectedCategoryId);
+  console.log('selectedRecurrenceId', selectedRecurrenceId);
+  console.log('allRecurrences', allRecurrences);
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
     {
@@ -89,7 +99,8 @@ const EventOverlay = ({
   const clearFields = () => {
     setName('');
     setAmount('');
-    setSelectedFrequency('MONTHLY');
+    setSelectedRecurrenceId('');
+    setSelectedCategoryId('');
     setDate(new Date(selectedDate));
   };
 
@@ -103,7 +114,9 @@ const EventOverlay = ({
       const eventData = {
         name,
         amount: sanitizedAmount,
-        frequency: selectedFrequency,
+        type: selectedType,
+        recurrenceId: selectedRecurrenceId,
+        categoryId: selectedCategoryId,
         startDate: date,
       };
       await createEvent(eventData);
@@ -116,18 +129,24 @@ const EventOverlay = ({
   };
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       try {
-        const resp = await getAllCategories();
-        setAllCategories(resp);
+        const cats = await getAllCategories();
+        setAllCategories(cats);
+
+        const recs = await getAllRecurrences();
+        setAllRecurrences(recs);
+
+        if (recs.length > 0) setSelectedRecurrenceId(recs[2].id);
+        if (cats.length > 0) setSelectedCategoryId(cats[0].id);
       } catch (error) {
-        Alert.alert('Erreur', 'Impossible de se connecter.');
+        Alert.alert('Erreur', 'Impossible de charger la config.');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchEvents();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -175,76 +194,82 @@ const EventOverlay = ({
         className="absolute bottom-0 w-full bg-slate-900 rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
-          maxHeight: '100%',
+          maxHeight: '90%',
         }}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1 "
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <SafeAreaView className="bg-slate-900">
-              <View className="p-2 gap-5 mb-5">
-                {inputData.map((input, index) => (
-                  <Input
-                    key={index}
-                    inputMode={input.inputMode as InputModeOptions}
-                    placeholder={input.placeholder}
-                    onChangeText={input.onChangeText}
-                    value={input.value}
-                  />
-                ))}
-              </View>
-              <View className="flex-row gap-3 items-center w-[100%]">
-                <Pressable
-                  className={`p-3 flex-1 ${
-                    selectedType === 'EXPENSE' ? 'bg-red-500' : 'bg-transparent'
-                  }`}
-                  onPress={handleClickExpense}
-                >
-                  <Text className="text-white text-center">Dépenses</Text>
-                </Pressable>
-                <Pressable
-                  className={`p-3 flex-1 ${
-                    selectedType === 'INCOME'
-                      ? 'bg-green-500'
-                      : 'bg-transparent'
-                  }`}
-                  onPress={handleClickIncome}
-                >
-                  <Text className="text-white text-center">Revenus</Text>
-                </Pressable>
-              </View>
-              <FrequencyPicker
-                selectedValue={selectedFrequency}
-                onValueChange={(itemValue) => setSelectedFrequency(itemValue)}
-              />
-
-              <CategoryPicker
-                selectedValue={selectedCategory}
-                onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-              />
-
-              <View className="flex justify-center items-center">
-                <Text className="text-white font-bold text-[18px] mb-[20px]">
-                  Date de début
-                </Text>
-                <DateTimePicker
-                  className="text-white"
-                  textColor="white"
-                  themeVariant="light"
-                  accentColor="white"
-                  testID="dateTimePicker"
-                  value={date}
-                  is24Hour={true}
-                  onChange={onChange}
+        <ScrollView>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            className="flex-1 "
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <SafeAreaView className="bg-slate-900">
+                <View className="p-2 gap-5 mb-5">
+                  {inputData.map((input, index) => (
+                    <Input
+                      key={index}
+                      inputMode={input.inputMode as InputModeOptions}
+                      placeholder={input.placeholder}
+                      onChangeText={input.onChangeText}
+                      value={input.value}
+                    />
+                  ))}
+                </View>
+                <View className="flex-row gap-3 items-center w-[100%]">
+                  <Pressable
+                    className={`p-3 flex-1 ${
+                      selectedType === 'EXPENSE'
+                        ? 'bg-red-500'
+                        : 'bg-transparent'
+                    }`}
+                    onPress={handleClickExpense}
+                  >
+                    <Text className="text-white text-center">Dépenses</Text>
+                  </Pressable>
+                  <Pressable
+                    className={`p-3 flex-1 ${
+                      selectedType === 'INCOME'
+                        ? 'bg-green-500'
+                        : 'bg-transparent'
+                    }`}
+                    onPress={handleClickIncome}
+                  >
+                    <Text className="text-white text-center">Revenus</Text>
+                  </Pressable>
+                </View>
+                <FrequencyPicker
+                  selectedValue={selectedRecurrenceId}
+                  onValueChange={(id: string) => setSelectedRecurrenceId(id)}
+                  allRecurrences={allRecurrences}
                 />
-              </View>
 
-              <Button title="Add" onPress={handleSubmit} />
-            </SafeAreaView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                <CategoryPicker
+                  selectedValue={selectedCategoryId}
+                  onValueChange={(id: string) => setSelectedCategoryId(id)}
+                  allCategories={allCategories}
+                />
+
+                <View className="flex justify-center items-center">
+                  <Text className="text-white font-bold text-[18px] mb-[20px]">
+                    Date de début
+                  </Text>
+                  <DateTimePicker
+                    className="text-white"
+                    textColor="white"
+                    themeVariant="light"
+                    accentColor="white"
+                    testID="dateTimePicker"
+                    value={date}
+                    is24Hour={true}
+                    onChange={onChange}
+                  />
+                </View>
+
+                <Button title="Add" onPress={handleSubmit} />
+              </SafeAreaView>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Animated.View>
     </Animated.View>
   );

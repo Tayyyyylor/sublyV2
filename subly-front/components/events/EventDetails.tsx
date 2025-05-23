@@ -31,7 +31,7 @@ const EventDetails = () => {
   const [isEditingFrequency, setIsEditingFrequency] = useState(false);
   const [newName, setNewName] = useState('');
   const [newAmount, setNewAmount] = useState('');
-  const [newFrequency, setNewFrequency] = useState<FrequencyType>('monthly');
+  const [newFrequency, setNewFrequency] = useState<FrequencyType>();
 
   const handleClickBack = () => {
     router.back();
@@ -53,7 +53,7 @@ const EventDetails = () => {
       amount: newAmount
         ? parseFloat(newAmount.replace(',', '.'))
         : event.amount,
-      frequency: newFrequency || event.frequency,
+      frequency: newFrequency || event,
     };
 
     if (isNaN(payload.amount)) {

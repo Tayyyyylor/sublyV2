@@ -1,12 +1,18 @@
+import { FrequencyType } from '@/types/global';
 import { Picker } from '@react-native-picker/picker';
 import React from 'react';
 
 interface PickerProps {
   selectedValue: string;
   onValueChange: (e: any) => void;
+  allRecurrences: FrequencyType[];
 }
 
-const FrequencyPicker = ({ selectedValue, onValueChange }: PickerProps) => {
+const FrequencyPicker = ({
+  selectedValue,
+  onValueChange,
+  allRecurrences,
+}: PickerProps) => {
   return (
     <Picker
       selectedValue={selectedValue}
@@ -15,11 +21,9 @@ const FrequencyPicker = ({ selectedValue, onValueChange }: PickerProps) => {
       }}
       style={{ color: 'white' }}
     >
-      <Picker.Item label="Une fois" value="DAILY" />
-      <Picker.Item label="Hebdomadaire" value="WEEKLY" />
-      <Picker.Item label="Mensuel" value="MONTHLY" />
-      <Picker.Item label="Trimestriel" value="QUARTERLY" />
-      <Picker.Item label="Annuel" value="YEARLY" />
+      {allRecurrences.map((r) => (
+        <Picker.Item key={r.id} label={r.frequency} value={r.id} />
+      ))}
     </Picker>
   );
 };

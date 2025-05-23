@@ -6,11 +6,13 @@ interface SaleOfTheDayProps {
   currency: string;
 }
 
-const SaleOfTheDay = ({ totalCount, currency }: SaleOfTheDayProps) => {
+const SaleOfTheDay = ({ totalCount = 0, currency }: SaleOfTheDayProps) => {
   return (
     <Text className="text-white text-[20px] text-center mt-2 font-bold">
-      Dépense prévue ce jour :
-      <Text className="text-violet-400">
+      Total du jour :
+      <Text
+        className={`${totalCount >= 0 ? 'text-green-500' : 'text-red-500'}`}
+      >
         {` ${totalCount}`}
         {currency}
       </Text>
