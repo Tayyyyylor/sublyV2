@@ -75,7 +75,7 @@ const EventOverlay = ({
 
   const translateY = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [500, 0], // Départ depuis le bas (500) jusqu'à position finale (0)
+    outputRange: [500, 0],
   });
 
   const handleClose = () => {
@@ -92,7 +92,7 @@ const EventOverlay = ({
         useNativeDriver: true,
       }),
     ]).start(() => {
-      onClose(); // Appelé après la fin de l'animation
+      onClose();
     });
   };
 
@@ -106,7 +106,7 @@ const EventOverlay = ({
 
   const handleSubmit = async () => {
     if (!name || !amount) {
-      Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
+      Alert.alert('Error', 'All fields are required.');
       return;
     }
     const sanitizedAmount = parseFloat(amount.replace(',', '.'));
@@ -165,7 +165,6 @@ const EventOverlay = ({
         }),
       ]).start();
     } else {
-      // Réinitialisation quand invisible
       fadeAnim.setValue(0);
       slideAnim.setValue(0);
     }
@@ -256,7 +255,7 @@ const EventOverlay = ({
                   <DateTimePicker
                     className="text-white"
                     textColor="white"
-                    themeVariant="light"
+                    themeVariant="dark"
                     accentColor="white"
                     testID="dateTimePicker"
                     value={date}

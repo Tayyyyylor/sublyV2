@@ -19,10 +19,14 @@ const FrequencyPicker = ({
       onValueChange={(itemValue) => {
         onValueChange(itemValue);
       }}
-      style={{ color: 'white' }}
     >
       {allRecurrences.map((r) => (
-        <Picker.Item key={r.id} label={r.frequency} value={r.id} />
+        <Picker.Item
+          key={r.id}
+          label={r.frequency}
+          value={r.id}
+          color="white"
+        />
       ))}
     </Picker>
   );

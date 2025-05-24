@@ -19,10 +19,9 @@ const CategoryPicker = ({
       onValueChange={(itemValue) => {
         onValueChange(itemValue);
       }}
-      style={{ color: 'white' }}
     >
       {allCategories.map((r) => (
-        <Picker.Item key={r.id} label={r.name} value={r.id} />
+        <Picker.Item key={r.id} label={r.name} value={r.id} color="white" />
       ))}
     </Picker>
   );
