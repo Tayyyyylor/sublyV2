@@ -1,6 +1,6 @@
 export type FrequencyType = {
   id: string;
-  frequency: string;
+  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
 };
 
 export type EventType = {
@@ -13,6 +13,7 @@ export type EventType = {
   startDate: Date;
   endDate?: Date;
   category?: CategoryType;
+  recurrence?: FrequencyType;
 };
 
 export type CategoryType = {

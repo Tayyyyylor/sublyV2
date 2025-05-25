@@ -59,11 +59,13 @@ const CalendarComponent = ({
         textDayFontFamily: 'Inter-Medium',
         textMonthFontFamily: 'Inter-Bold',
         todayTextColor: '#fff',
-        selectedDayBackgroundColor: '#94a3b8',
+        selectedDayBackgroundColor: '#fff',
         selectedDayTextColor: '#fff',
-        backgroundColor: '#0f172a',
-        calendarBackground: '#0f172a',
+        backgroundColor: '#121212',
+        calendarBackground: '#121212',
         dayTextColor: '#fff',
+        monthTextColor: '#fff',
+        arrowColor: '#FBBF24',
       }}
       onDayPress={onDayPress}
       markedDates={markedDates}

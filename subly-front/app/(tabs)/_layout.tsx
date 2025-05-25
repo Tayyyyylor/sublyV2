@@ -24,7 +24,7 @@ export default function TabLayout() {
       screenOptions={({ route }) => ({
         tabBarStyle: { backgroundColor: styles.container.backgroundColor },
         contentStyle: { backgroundColor: styles.container.backgroundColor },
-        tabBarActiveTintColor: '#001f3f',
+        tabBarActiveTintColor: '#FBBF24',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
         tabBarIcon: ({ color, focused }) => {
@@ -50,7 +50,6 @@ export default function TabLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   containerCentered: {
     flex: 1,

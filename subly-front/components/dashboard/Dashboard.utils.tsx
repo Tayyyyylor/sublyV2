@@ -88,7 +88,7 @@ export const generateMarkedDates = (
 
   marked[selectedDate] = {
     selected: true,
-    selectedColor: '#7c3aed', // violet-600
+    selectedColor: 'grey',
   };
 
   events.forEach((event) => {
@@ -108,12 +108,12 @@ export const generateMarkedDates = (
         marked[dateKey] = {
           ...marked[dateKey],
           marked: true,
-          dotColor: '#ef4444',
+          dotColor: '#FBBF24',
         };
       } else {
         marked[dateKey] = {
           marked: true,
-          dotColor: '#ef4444',
+          dotColor: '#FBBF24',
         };
       }
 

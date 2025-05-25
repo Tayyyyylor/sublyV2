@@ -11,7 +11,7 @@ const SaleOfTheDay = ({ totalCount = 0, currency }: SaleOfTheDayProps) => {
     <Text className="text-white text-[20px] text-center mt-2 font-bold">
       Total du jour :
       <Text
-        className={`${totalCount >= 0 ? 'text-green-500' : 'text-red-500'}`}
+        className={`${totalCount >= 0 ? 'text-emerald-500' : 'text-red-500'}`}
       >
         {` ${totalCount}`}
         {currency}

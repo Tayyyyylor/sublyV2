@@ -2,6 +2,20 @@ import { EventType } from '@/types/global';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import BadgeRecurrence from '../BadgeRecurrence';
+import { useRecurrences } from '@/hooks/useRecurrences';
+
+type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
+
+const translateFrequency = (frequency: Frequency): string => {
+  const translations: Record<Frequency, string> = {
+    DAILY: 'JOURNALIER',
+    WEEKLY: 'HEBDOMADAIRE',
+    MONTHLY: 'MENSUEL',
+    QUARTERLY: 'TRIMESTRIEL',
+    YEARLY: 'ANNUEL',
+  };
+  return translations[frequency];
+};
 
 interface EventProps {
   id: string;
@@ -10,28 +24,42 @@ interface EventProps {
 }
 
 const EventCard = ({ data, onPress }: EventProps) => {
-  console.log('data', data);
+  const { data: recurrences } = useRecurrences();
+
+  const recurrence = recurrences?.find((r) => r.id === data.recurrenceId);
+
+  const displayFrequency = recurrence?.frequency
+    ? translateFrequency(recurrence.frequency)
+    : undefined;
+
+  const isExpense = data.type === 'EXPENSE';
+  const amountText = isExpense ? `-${data.amount}€` : `+${data.amount}€`;
+  const amountColor = isExpense ? 'text-red-600' : 'text-emerald-600';
+
   return (
     <TouchableOpacity
-      className={`${data?.type === 'EXPENSE' ? 'bg-red-100' : 'bg-green-100'} p-3 mb-2 rounded-lg`}
+      className="bg-gray-200 p-3 mb-2 rounded-lg"
       onPress={onPress}
     >
       <View className="flex-column items-start gap-1">
-        <View className="flex-row items-center gap-4">
+        <View className="flex-row items-center justify-between w-full">
           <Text className="font-bold text-black text-[18px] capitalize">
             {data.name}
           </Text>
-          <BadgeRecurrence />
+          <Text className={`${amountColor} text-[16px] font-bold`}>
+            {amountText}
+          </Text>
         </View>
         <View className="flex-row items-end gap-1">
           <Text>{data?.category?.icon}</Text>
           <Text className="text-[12px]">{data?.category?.name}</Text>
         </View>
-        <Text
-          className={`${data?.type === 'EXPENSE' ? 'text-red-900' : 'text-green-900'} text-[16px] font-bold`}
-        >
-          {data.amount}€
-        </Text>
+
+        {recurrence && (
+          <View className="flex-row items-center gap-2">
+            <BadgeRecurrence recurrence={displayFrequency as Frequency} />
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );

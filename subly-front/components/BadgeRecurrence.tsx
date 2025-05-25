@@ -1,27 +1,16 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-const BadgeRecurrence = () => {
-  const recurrences = [
-    {
-      name: 'DAILY',
-    },
-    {
-      name: 'WEEKLY',
-    },
-    {
-      name: 'MONTHLY',
-    },
-    {
-      name: 'QUARTERLY',
-    },
-    {
-      name: 'YEARLY',
-    },
-  ];
+interface BadgeRecurrenceProps {
+  recurrence: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
+}
+
+const BadgeRecurrence = ({ recurrence }: BadgeRecurrenceProps) => {
+  const label = recurrence.charAt(0) + recurrence.slice(1).toLowerCase();
+
   return (
     <View className="bg-blue-100 rounded-full p-2">
-      <Text className="text-black text-[12px] font-bold">DAILY</Text>
+      <Text className="text-black text-[12px] font-bold">{label}</Text>
     </View>
   );
 };

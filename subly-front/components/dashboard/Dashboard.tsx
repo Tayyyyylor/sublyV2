@@ -91,19 +91,19 @@ const Dashboard = () => {
   }, [selectedDate, isOverlayVisible, allEvents, allRecurrences]);
 
   return (
-    <SafeAreaView className="relative h-full bg-slate-900">
-      <Text className="font-bold pl-4 mb-[10px] text-[20px] text-violet-400">
+    <SafeAreaView className="relative h-full bg-[#121212]">
+      <Text className="font-bold pl-4 mb-[10px] text-[20px] text-yellow-400">
         {date}
       </Text>
       <Text className="text-[30px] text-center font-bold text-white">
-        Hello <Text className="text-violet-400">{user?.username}</Text> !
+        Hello <Text className="text-yellow-400">{user?.username}</Text> !
         Bienvenue !
       </Text>
       <View>
         <Text className="text-[30px] text-center font-bold text-white">
           Total au mois{' '}
           <Text
-            className={`${monthlyTotal >= 0 ? 'text-green-500' : 'text-red-500'}`}
+            className={`${monthlyTotal >= 0 ? 'text-emerald-500' : 'text-red-400'}`}
           >
             {monthlyTotal}€
           </Text>
@@ -112,7 +112,7 @@ const Dashboard = () => {
       <View className="mb-9">
         <SaleOfTheDay totalCount={dailyTotal} currency="€" />
       </View>
-      <View className="p-[10px] bg-blue-900">
+      <View className="p-[10px] bg-[#121212]">
         <CalendarComponent
           onDayPress={(day: any) => {
             setSelectedDate(day.dateString);
@@ -135,14 +135,19 @@ const Dashboard = () => {
             Aucun événement prévu
           </Text>
         ) : (
-          events.map((event) => (
-            <EventCard
-              key={event.id}
-              id={event.id}
-              data={event}
-              onPress={() => router.push(`/event/${event.id}`)}
-            />
-          ))
+          <View className="flex-col gap-5">
+            <Text className="text-white text-[16px] font-bold text-center">
+              Transaction(s) du jour
+            </Text>
+            {events.map((event) => (
+              <EventCard
+                key={event.id}
+                id={event.id}
+                data={event}
+                onPress={() => router.push(`/event/${event.id}`)}
+              />
+            ))}
+          </View>
         )}
       </ScrollView>
       <ButtonAdd openModal={openModal} className="absolute bottom-2 right-2" />
