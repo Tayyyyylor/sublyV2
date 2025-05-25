@@ -12,6 +12,7 @@ export type EventType = {
   categoryId: string;
   startDate: Date;
   endDate?: Date;
+  category?: CategoryType;
 };
 
 export type CategoryType = {

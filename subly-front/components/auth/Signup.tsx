@@ -7,6 +7,7 @@ import { registerUser } from '@/services/authService';
 import ButtonAuth from './ButtonAuth';
 import Input from '../Input';
 import Title from '../Title';
+import Logo from '../Logo';
 
 const Signup = () => {
   const router = useRouter();
@@ -103,9 +104,12 @@ const Signup = () => {
   };
 
   return (
-    <SafeAreaView>
-      <Title label="Inscription" />
-      <View className="p-2 gap-5 mb-5">
+    <SafeAreaView className="flex-1 mt-[100px]">
+      <View className="flex-col items-center gap-1 mb-[20px]">
+        <Logo />
+        <Title label="Inscription" />
+      </View>
+      <View className="p-10 gap-5">
         {inputData.map((input, index) => (
           <Input
             secureTextEntry={input?.id === 'password' ? true : false}
@@ -127,12 +131,13 @@ const Signup = () => {
           />
         ))}
       </View>
-      <View className="flex-col items-center gap-3">
-        <ButtonAuth onPress={handleSignup} label="S'inscrire" />
+      <View className="flex-col items-center gap-3 p-10">
         <ButtonAuth
-          onPress={handleRedirectSignIn}
-          label="déjà inscrit ? connectez-vous"
-          isBlack={false}
+          onPress={handleSignup}
+          label="S'inscrire"
+          text="Déjà inscrit ?"
+          labelSecondButton="Se connecter"
+          onPressSecondButton={handleRedirectSignIn}
         />
       </View>
     </SafeAreaView>

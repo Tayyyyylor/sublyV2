@@ -1,14 +1,6 @@
-import { FrequencyType } from '@/types/global';
+import { EventType, FrequencyType } from '@/types/global';
 import axiosInstance from '../helpers/axiosInstance';
-import { router } from 'expo-router';
 import { CreateEventPayload } from '@/types/event';
-
-interface EventType {
-  name: string;
-  amount: number;
-  frequency: FrequencyType;
-  startDate: Date;
-}
 
 const formatDateToUtcMidnight = (date: Date) => {
   const year = date.getFullYear();

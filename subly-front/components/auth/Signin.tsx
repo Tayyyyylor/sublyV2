@@ -8,6 +8,7 @@ import { useAuth } from '@/context/useAuth';
 import ButtonAuth from './ButtonAuth';
 import Title from '../Title';
 import Input from '../Input';
+import Logo from '../Logo';
 
 const Signin = () => {
   const router = useRouter();
@@ -53,9 +54,12 @@ const Signin = () => {
   };
 
   return (
-    <SafeAreaView>
-      <Title label="Connexion" />
-      <View className="p-2 gap-3 mb-5">
+    <SafeAreaView className="flex-1 mt-[100px]">
+      <View className="flex-col items-center gap-1 mb-[20px]">
+        <Logo />
+        <Title label="Connexion" />
+      </View>
+      <View className="p-10 gap-5 ">
         {inputData.map((input, index) => {
           return (
             <Input
@@ -70,13 +74,13 @@ const Signin = () => {
           );
         })}
       </View>
-      <View className="flex-col items-center gap-3">
-        <ButtonAuth label="Se connecter" onPress={handleLogin} />
-
+      <View className="flex-col items-center gap-3 p-10">
         <ButtonAuth
-          label="pas encore inscrit ?"
-          onPress={handleRedirectSignUp}
-          isBlack={false}
+          label="Se connecter"
+          onPress={handleLogin}
+          text="Pas encore inscrit ?"
+          labelSecondButton="Créer un compte"
+          onPressSecondButton={handleRedirectSignUp}
         />
       </View>
     </SafeAreaView>
