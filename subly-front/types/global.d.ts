@@ -1,6 +1,8 @@
+export type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | 'ONCE';
+
 export type FrequencyType = {
   id: string;
-  frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
+  frequency: Frequency
 };
 
 export type EventType = {

@@ -1,6 +1,7 @@
-import { FrequencyType } from '@/types/global';
+import { Frequency, FrequencyType } from '@/types/global';
 import { Picker } from '@react-native-picker/picker';
 import React from 'react';
+import { translateFrequency } from './events/Events.utils';
 
 interface PickerProps {
   selectedValue: string;
@@ -13,6 +14,8 @@ const FrequencyPicker = ({
   onValueChange,
   allRecurrences,
 }: PickerProps) => {
+
+  console.log('allRecurrences', allRecurrences)
   return (
     <Picker
       selectedValue={selectedValue}
@@ -20,14 +23,16 @@ const FrequencyPicker = ({
         onValueChange(itemValue);
       }}
     >
-      {allRecurrences.map((r) => (
-        <Picker.Item
+      {allRecurrences.map((r) => {
+        const displayFrequency = translateFrequency(r.frequency);
+        return(
+          <Picker.Item
           key={r.id}
-          label={r.frequency}
+          label={displayFrequency}
           value={r.id}
           color="white"
-        />
-      ))}
+          />
+        )})}
     </Picker>
   );
 };

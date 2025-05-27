@@ -44,6 +44,10 @@ export const doesEventOccurOnDate = (
   let currentDate = eventStartDate;
   while (isBefore(currentDate, targetDateObj)) {
     switch (frequency) {
+      case 'ONCE': 
+          currentDate = new Date(targetDateObj.getTime());
+          currentDate.setDate(currentDate.getDate() + 1);
+          break;
       case 'DAILY':
         currentDate = addDays(currentDate, 1);
         break;
@@ -118,6 +122,10 @@ export const generateMarkedDates = (
       }
 
       switch (recurrence.frequency) {
+        case 'ONCE': 
+          currentDate = new Date(endDate.getTime());
+          currentDate.setDate(currentDate.getDate() + 1);
+          break;
         case 'DAILY':
           currentDate = addDays(currentDate, 1);
           break;
@@ -163,6 +171,10 @@ export const getMonthlyTotal = (
       }
 
       switch (recurrence.frequency) {
+        case 'ONCE': 
+          currentDate = new Date(endDate.getTime());
+          currentDate.setDate(currentDate.getDate() + 1);
+          break;
         case 'DAILY':
           currentDate = addDays(currentDate, 1);
           break;

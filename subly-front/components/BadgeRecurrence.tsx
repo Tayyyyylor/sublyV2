@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 interface BadgeRecurrenceProps {
-  recurrence: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
+  recurrence: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | 'ONCE';
 }
 
 const BadgeRecurrence = ({ recurrence }: BadgeRecurrenceProps) => {

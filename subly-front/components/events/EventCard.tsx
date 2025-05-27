@@ -1,21 +1,13 @@
-import { EventType } from '@/types/global';
+import { EventType, Frequency } from '@/types/global';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import BadgeRecurrence from '../BadgeRecurrence';
 import { useRecurrences } from '@/hooks/useRecurrences';
+import { translateFrequency } from './Events.utils';
 
-type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY';
 
-const translateFrequency = (frequency: Frequency): string => {
-  const translations: Record<Frequency, string> = {
-    DAILY: 'JOURNALIER',
-    WEEKLY: 'HEBDOMADAIRE',
-    MONTHLY: 'MENSUEL',
-    QUARTERLY: 'TRIMESTRIEL',
-    YEARLY: 'ANNUEL',
-  };
-  return translations[frequency];
-};
+
+
 
 interface EventProps {
   id: string;

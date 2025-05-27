@@ -47,15 +47,12 @@ const EventOverlay = ({
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<string>('');
   const [selectedType, setSelectedType] = useState<TransacType>('EXPENSE');
-  const [date, setDate] = useState<Date>(new Date(selectedDate));
+  const [startDate, setStartDate] = useState<Date>(new Date(selectedDate));
+  const [endDate, setEndDate] = useState<Date>(new Date(selectedDate));
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   const [selectedRecurrenceId, setSelectedRecurrenceId] = useState<string>('');
 
-  console.log('allCategories', allCategories);
-  console.log('selectedCategoryId', selectedCategoryId);
-  console.log('selectedRecurrenceId', selectedRecurrenceId);
-  console.log('allRecurrences', allRecurrences);
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
     {
@@ -66,10 +63,17 @@ const EventOverlay = ({
     },
   ];
 
-  const onChange = (_event: any, selectedDate?: Date) => {
+  const onChangeStartDate = (_event: any, selectedDate?: Date) => {
     if (selectedDate) {
       selectedDate.setHours(0, 0, 0, 0);
-      setDate(selectedDate);
+      setStartDate(selectedDate);
+    }
+  };
+
+  const onChangeEndDate = (_event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      selectedDate.setHours(0, 0, 0, 0);
+      setEndDate(selectedDate);
     }
   };
 
@@ -101,7 +105,8 @@ const EventOverlay = ({
     setAmount('');
     setSelectedRecurrenceId('');
     setSelectedCategoryId('');
-    setDate(new Date(selectedDate));
+    setStartDate(new Date(selectedDate));
+    setEndDate(new Date(selectedDate));
   };
 
   const handleSubmit = async () => {
@@ -117,7 +122,8 @@ const EventOverlay = ({
         type: selectedType,
         recurrenceId: selectedRecurrenceId,
         categoryId: selectedCategoryId,
-        startDate: date,
+        startDate: startDate,
+        endDate: endDate,
       };
       await createEvent(eventData);
       Alert.alert('Succès', 'Event créé avec succès !');
@@ -172,7 +178,8 @@ const EventOverlay = ({
 
   useEffect(() => {
     if (isVisible) {
-      setDate(new Date(selectedDate));
+      setStartDate(new Date(selectedDate));
+      setEndDate(new Date(selectedDate));
     }
   }, [isVisible, selectedDate]);
 
@@ -190,10 +197,10 @@ const EventOverlay = ({
       </TouchableWithoutFeedback>
 
       <Animated.View
-        className="absolute bottom-0 w-full bg-slate-900 rounded-t-3xl p-6"
+        className="absolute bottom-0 w-full bg-[#121212] rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
-          maxHeight: '90%',
+          maxHeight: '80%',
         }}
       >
         <ScrollView>
@@ -202,7 +209,7 @@ const EventOverlay = ({
             className="flex-1 "
           >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <SafeAreaView className="bg-slate-900">
+              <SafeAreaView className="bg-[#121212]">
                 <View className="p-2 gap-5 mb-5">
                   {inputData.map((input, index) => (
                     <Input
@@ -237,7 +244,7 @@ const EventOverlay = ({
                   </Pressable>
                 </View>
                 <FrequencyPicker
-                  selectedValue={selectedRecurrenceId}
+                  selectedValue={selectedRecurrenceId as string}
                   onValueChange={(id: string) => setSelectedRecurrenceId(id)}
                   allRecurrences={allRecurrences}
                 />
@@ -247,7 +254,7 @@ const EventOverlay = ({
                   onValueChange={(id: string) => setSelectedCategoryId(id)}
                   allCategories={allCategories}
                 />
-
+            <View className='flex-row gap-3 items-center w-[100%] justify-evenly'>
                 <View className="flex justify-center items-center">
                   <Text className="text-white font-bold text-[18px] mb-[20px]">
                     Date de début
@@ -258,10 +265,26 @@ const EventOverlay = ({
                     themeVariant="dark"
                     accentColor="white"
                     testID="dateTimePicker"
-                    value={date}
+                    value={startDate}
                     is24Hour={true}
-                    onChange={onChange}
-                  />
+                    onChange={onChangeStartDate}
+                    />
+                </View>
+                <View className="flex justify-center items-center">
+                  <Text className="text-white font-bold text-[18px] mb-[20px]">
+                    Date de fin
+                  </Text>
+                  <DateTimePicker
+                    className="text-white"
+                    textColor="white"
+                    themeVariant="dark"
+                    accentColor="white"
+                    testID="dateTimePicker"
+                    value={endDate}
+                    is24Hour={true}
+                    onChange={onChangeEndDate}
+                      />
+                  </View>
                 </View>
 
                 <Button title="Add" onPress={handleSubmit} />

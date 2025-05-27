@@ -2,6 +2,7 @@ import { Event } from 'src/events/event.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum Frequency {
+  ONCE = 'ONCE',
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
   MONTHLY = 'MONTHLY',
