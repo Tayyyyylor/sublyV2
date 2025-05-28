@@ -5,10 +5,6 @@ import BadgeRecurrence from '../BadgeRecurrence';
 import { useRecurrences } from '@/hooks/useRecurrences';
 import { translateFrequency } from './Events.utils';
 
-
-
-
-
 interface EventProps {
   id: string;
   data: EventType;

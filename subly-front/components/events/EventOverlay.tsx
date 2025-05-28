@@ -22,6 +22,7 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
+  Switch,
   Text,
   TouchableWithoutFeedback,
   View,
@@ -48,7 +49,8 @@ const EventOverlay = ({
   const [amount, setAmount] = useState<string>('');
   const [selectedType, setSelectedType] = useState<TransacType>('EXPENSE');
   const [startDate, setStartDate] = useState<Date>(new Date(selectedDate));
-  const [endDate, setEndDate] = useState<Date>(new Date(selectedDate));
+  const [hasEndDate, setHasEndDate] = useState(false);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
   const [selectedRecurrenceId, setSelectedRecurrenceId] = useState<string>('');
@@ -106,7 +108,8 @@ const EventOverlay = ({
     setSelectedRecurrenceId('');
     setSelectedCategoryId('');
     setStartDate(new Date(selectedDate));
-    setEndDate(new Date(selectedDate));
+    setHasEndDate(false);
+    setEndDate(undefined);
   };
 
   const handleSubmit = async () => {
@@ -123,7 +126,7 @@ const EventOverlay = ({
         recurrenceId: selectedRecurrenceId,
         categoryId: selectedCategoryId,
         startDate: startDate,
-        endDate: endDate,
+        endDate: hasEndDate ? endDate : undefined,
       };
       await createEvent(eventData);
       Alert.alert('Succès', 'Event créé avec succès !');
@@ -179,7 +182,8 @@ const EventOverlay = ({
   useEffect(() => {
     if (isVisible) {
       setStartDate(new Date(selectedDate));
-      setEndDate(new Date(selectedDate));
+      setHasEndDate(false);
+      setEndDate(undefined);
     }
   }, [isVisible, selectedDate]);
 
@@ -254,36 +258,48 @@ const EventOverlay = ({
                   onValueChange={(id: string) => setSelectedCategoryId(id)}
                   allCategories={allCategories}
                 />
-            <View className='flex-row gap-3 items-center w-[100%] justify-evenly'>
-                <View className="flex justify-center items-center">
-                  <Text className="text-white font-bold text-[18px] mb-[20px]">
-                    Date de début
-                  </Text>
-                  <DateTimePicker
-                    className="text-white"
-                    textColor="white"
-                    themeVariant="dark"
-                    accentColor="white"
-                    testID="dateTimePicker"
-                    value={startDate}
-                    is24Hour={true}
-                    onChange={onChangeStartDate}
+                <View className="flex-row gap-3 items-center w-[100%] justify-evenly">
+                  <View className="flex justify-center items-center">
+                    <Text className="text-white font-bold text-[18px] mb-[20px]">
+                      Date de début
+                    </Text>
+                    <DateTimePicker
+                      className="text-white"
+                      textColor="white"
+                      themeVariant="dark"
+                      accentColor="white"
+                      testID="dateTimePicker"
+                      value={startDate}
+                      is24Hour={true}
+                      onChange={onChangeStartDate}
                     />
-                </View>
-                <View className="flex justify-center items-center">
-                  <Text className="text-white font-bold text-[18px] mb-[20px]">
-                    Date de fin
-                  </Text>
-                  <DateTimePicker
-                    className="text-white"
-                    textColor="white"
-                    themeVariant="dark"
-                    accentColor="white"
-                    testID="dateTimePicker"
-                    value={endDate}
-                    is24Hour={true}
-                    onChange={onChangeEndDate}
+                  </View>
+
+                  <View className="flex justify-center items-center">
+                    <View className="flex-row items-center mb-[20px]">
+                      <Text className="text-white font-bold text-[18px] mr-2">
+                        Date de fin
+                      </Text>
+                      <Switch
+                        value={hasEndDate}
+                        onValueChange={setHasEndDate}
+                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                        thumbColor={hasEndDate ? '#f5dd4b' : '#f4f3f4'}
                       />
+                    </View>
+                    {hasEndDate && (
+                      <DateTimePicker
+                        className="text-white"
+                        textColor="white"
+                        themeVariant="dark"
+                        accentColor="white"
+                        testID="dateTimePicker"
+                        value={endDate || startDate}
+                        is24Hour={true}
+                        onChange={onChangeEndDate}
+                        minimumDate={startDate}
+                      />
+                    )}
                   </View>
                 </View>
 

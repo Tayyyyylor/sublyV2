@@ -14,8 +14,7 @@ const FrequencyPicker = ({
   onValueChange,
   allRecurrences,
 }: PickerProps) => {
-
-  console.log('allRecurrences', allRecurrences)
+  console.log('allRecurrences', allRecurrences);
   return (
     <Picker
       selectedValue={selectedValue}
@@ -25,14 +24,15 @@ const FrequencyPicker = ({
     >
       {allRecurrences.map((r) => {
         const displayFrequency = translateFrequency(r.frequency);
-        return(
+        return (
           <Picker.Item
-          key={r.id}
-          label={displayFrequency}
-          value={r.id}
-          color="white"
+            key={r.id}
+            label={displayFrequency}
+            value={r.id}
+            color="white"
           />
-        )})}
+        );
+      })}
     </Picker>
   );
 };

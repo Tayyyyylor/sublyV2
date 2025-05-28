@@ -1,58 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Alert,
-  Button,
-  Keyboard,
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { Alert, Pressable, SafeAreaView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { deleteEvent, getOneEvent, modifyEvent } from '@/services/eventService';
-import { EventType, Frequency, FrequencyType } from '@/types/global';
-
-import DefaultButton from '../DefaultButton';
-import DefaultModal from '../DefaultModal';
-import FrequencyPicker from '../FrequencyPicker';
-import Input from '../Input';
+import { getOneEvent } from '@/services/eventService';
+import { EventType } from '@/types/global';
 
 const EventDetails = () => {
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const [event, setEvent] = useState<EventType | null>(null);
+  const isExpense = event?.type === 'EXPENSE';
+
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return '';
+    return format(new Date(date), 'dd MMMM yyyy', { locale: fr });
+  };
 
   const infos = [
     {
-      label: "Nom",
-      value: ""
+      label: 'Fréquence',
+      value: event?.recurrence?.frequency || '',
     },
     {
-      label: "Montant",
-      value: ""
+      label: 'Catégories',
+      value: event?.category?.name || '',
     },
     {
-      label: "Fréquence",
-      value: ""
+      label: 'Date de début',
+      value: formatDate(event?.startDate),
     },
     {
-      label: "Catégorie",
-      value: ""
+      label: 'Date de fin',
+      value: formatDate(event?.endDate),
     },
-    {
-      label: "Date de début",
-      value: ""
-    },
-    {
-      label: "Date de fin",
-      value: ""
-    },
-  ]
- 
+  ];
 
   const handleClickBack = () => {
     router.back();
@@ -73,12 +56,36 @@ const EventDetails = () => {
 
   return (
     <SafeAreaView className="relative flex-1 items-center p-4">
-      <Text className='text-white'>{event?.name}</Text>
-      <View>
+      <Pressable
+        onPress={handleClickBack}
+        className="flex-row justify-start w-full ml-10 mb-5"
+      >
+        <Text className="text-white text-[18px] font-bold">Retour</Text>
+      </Pressable>
+      <Text className="text-white text-[24px] font-bold mb-5">
+        {event?.name}
+      </Text>
+      <View
+        className={` ${isExpense ? 'bg-red-300' : 'bg-green-300'} p-2 rounded-[8px] mb-3`}
+      >
+        <Text
+          className={`${isExpense ? 'text-red-800' : 'text-green-800'} text-[18px] font-bold`}
+        >
+          {isExpense ? `-${event?.amount}€` : `+${event?.amount}€`}
+        </Text>
+      </View>
+      <View className="flex-column w-full p-5 gap-3">
         {infos.map((info, index) => (
-          <View key={index}>
-            <Text className='text-white'>{info.label}</Text>
-            <Text className='text-white'>{info.value}</Text>
+          <View
+            key={index}
+            className="flex-row justify-between w-full border-white p-3 border"
+          >
+            <Text className="text-white text-[18px] font-bold">
+              {info.label}
+            </Text>
+            <Text className="text-white text-[18px] font-bold">
+              {info.value}
+            </Text>
           </View>
         ))}
       </View>

@@ -1,8 +1,14 @@
-export type Frequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'QUARTERLY' | 'YEARLY' | 'ONCE';
+export type Frequency =
+  | 'DAILY'
+  | 'WEEKLY'
+  | 'MONTHLY'
+  | 'QUARTERLY'
+  | 'YEARLY'
+  | 'ONCE';
 
 export type FrequencyType = {
   id: string;
-  frequency: Frequency
+  frequency: Frequency;
 };
 
 export type EventType = {
