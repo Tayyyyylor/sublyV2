@@ -31,7 +31,7 @@ const EventDetails = () => {
     },
     {
       label: 'Catégories',
-      value: event?.category?.name || '',
+      value: event?.category?.icon + ' ' + event?.category?.name || '',
       hasBorder: true,
     },
     {

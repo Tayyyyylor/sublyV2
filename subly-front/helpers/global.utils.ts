@@ -8,6 +8,8 @@ import {
   isSameMonth,
 } from 'date-fns';
 
+export const DEFAULT_FREQUENCY = 'MONTHLY';
+
 export const today = new Date();
 today.setHours(0, 0, 0, 0);
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { createEvent } from '@/services/eventService';
+import { createEvent, updateEvent } from '@/services/eventService';
 import { getAllCategories } from '@/services/categoryService';
 import { getAllRecurrences } from '@/services/recurrenceService';
 
@@ -10,6 +10,7 @@ import { CategoryType, RecurrenceType, TransacType } from '@/types/global';
 import Input from '../Input';
 import FrequencyPicker from '../FrequencyPicker';
 import CategoryPicker from '../CategoryPicker';
+import TypeSelector from '../TypeSelector';
 
 import {
   Alert,
@@ -20,7 +21,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Switch,
   Text,
@@ -28,6 +28,7 @@ import {
   View,
 } from 'react-native';
 import { EventCreateType } from '@/types/event';
+
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -225,26 +226,10 @@ const EventOverlay = ({
                   />
                 ))}
               </View>
-              <View className="flex-row gap-3 items-center w-[100%]">
-                <Pressable
-                  className={`p-3 flex-1 ${
-                    selectedType === 'EXPENSE' ? 'bg-red-500' : 'bg-transparent'
-                  }`}
-                  onPress={handleClickExpense}
-                >
-                  <Text className="text-white text-center">Dépenses</Text>
-                </Pressable>
-                <Pressable
-                  className={`p-3 flex-1 ${
-                    selectedType === 'INCOME'
-                      ? 'bg-green-500'
-                      : 'bg-transparent'
-                  }`}
-                  onPress={handleClickIncome}
-                >
-                  <Text className="text-white text-center">Revenus</Text>
-                </Pressable>
-              </View>
+              <TypeSelector
+                selectedType={selectedType}
+                setSelectedType={setSelectedType}
+              />
               <FrequencyPicker
                 selectedValue={selectedRecurrence?.id as string}
                 onValueChange={(id: string) => {
