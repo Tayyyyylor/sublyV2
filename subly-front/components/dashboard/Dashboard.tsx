@@ -39,6 +39,8 @@ const Dashboard = () => {
   const dailyTotal = getDailyTotal(events);
   const monthlyTotal = getMonthlyTotal(allEvents, currentMonth, allRecurrences);
 
+  console.log('allEvents dashboard', allEvents);
+
   const openModal = () => {
     setIsOverlayVisible(true);
   };
@@ -74,7 +76,7 @@ const Dashboard = () => {
     const fetchFiltered = async () => {
       try {
         const filtered = allEvents.filter((event) => {
-          const rec = allRecurrences.find((r) => r.id === event.recurrenceId);
+          const rec = allRecurrences.find((r) => r.id === event.recurrence.id);
           return rec
             ? doesEventOccurOnDate(event, selectedDate, rec.frequency)
             : false;

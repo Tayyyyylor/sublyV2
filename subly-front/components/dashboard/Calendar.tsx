@@ -58,7 +58,7 @@ const CalendarComponent = ({
       theme={{
         textDayFontFamily: 'Inter-Medium',
         textMonthFontFamily: 'Inter-Bold',
-        todayTextColor: '#fff',
+        todayTextColor: '#FBBF24',
         selectedDayBackgroundColor: '#fff',
         selectedDayTextColor: '#fff',
         backgroundColor: '#121212',

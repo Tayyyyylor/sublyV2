@@ -6,28 +6,27 @@ export type Frequency =
   | 'YEARLY'
   | 'ONCE';
 
-export type FrequencyType = {
-  id: string;
-  frequency: Frequency;
-};
-
-export type EventType = {
-  id: string;
-  name: string;
-  amount: number;
-  type: TransacType;
-  recurrenceId: string;
-  categoryId: string;
-  startDate: Date;
-  endDate?: Date;
-  category?: CategoryType;
-  recurrence?: FrequencyType;
-};
-
-export type CategoryType = {
+export interface CategoryType {
   id: string;
   name: string;
   icon: string;
-};
+}
+
+export interface RecurrenceType {
+  id: string;
+  frequency: Frequency;
+}
 
 export type TransacType = 'EXPENSE' | 'INCOME';
+
+export interface EventType {
+  id: string;
+  name: string;
+  amount: string;
+  type: TransacType;
+  startDate: Date;
+  endDate?: Date;
+  category: CategoryType;
+  recurrence: RecurrenceType;
+  userId: string;
+}

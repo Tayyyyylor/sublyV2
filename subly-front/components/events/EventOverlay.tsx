@@ -5,7 +5,7 @@ import { createEvent } from '@/services/eventService';
 import { getAllCategories } from '@/services/categoryService';
 import { getAllRecurrences } from '@/services/recurrenceService';
 
-import { CategoryType, FrequencyType, TransacType } from '@/types/global';
+import { CategoryType, RecurrenceType, TransacType } from '@/types/global';
 
 import Input from '../Input';
 import FrequencyPicker from '../FrequencyPicker';
@@ -27,6 +27,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { EventCreateType } from '@/types/event';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -43,7 +44,7 @@ const EventOverlay = ({
   const [_, setIsLoading] = useState(true);
 
   const [allCategories, setAllCategories] = useState<CategoryType[]>([]);
-  const [allRecurrences, setAllRecurrences] = useState<FrequencyType[]>([]);
+  const [allRecurrences, setAllRecurrences] = useState<RecurrenceType[]>([]);
 
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<string>('');
@@ -52,8 +53,11 @@ const EventOverlay = ({
   const [hasEndDate, setHasEndDate] = useState(false);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
-  const [selectedRecurrenceId, setSelectedRecurrenceId] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
+    null,
+  );
+  const [selectedRecurrence, setSelectedRecurrence] =
+    useState<RecurrenceType | null>(null);
 
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
@@ -105,27 +109,27 @@ const EventOverlay = ({
   const clearFields = () => {
     setName('');
     setAmount('');
-    setSelectedRecurrenceId('');
-    setSelectedCategoryId('');
+    setSelectedRecurrence(null);
+    setSelectedCategory(null);
     setStartDate(new Date(selectedDate));
     setHasEndDate(false);
     setEndDate(undefined);
   };
 
   const handleSubmit = async () => {
-    if (!name || !amount) {
+    if (!name || !amount || !selectedCategory || !selectedRecurrence) {
       Alert.alert('Error', 'All fields are required.');
       return;
     }
     const sanitizedAmount = parseFloat(amount.replace(',', '.'));
     try {
-      const eventData = {
+      const eventData: EventCreateType = {
         name,
         amount: sanitizedAmount,
         type: selectedType,
-        recurrenceId: selectedRecurrenceId,
-        categoryId: selectedCategoryId,
-        startDate: startDate,
+        categoryId: selectedCategory.id,
+        recurrenceId: selectedRecurrence.id,
+        startDate,
         endDate: hasEndDate ? endDate : undefined,
       };
       await createEvent(eventData);
@@ -146,8 +150,8 @@ const EventOverlay = ({
         const recs = await getAllRecurrences();
         setAllRecurrences(recs);
 
-        if (recs.length > 0) setSelectedRecurrenceId(recs[2].id);
-        if (cats.length > 0) setSelectedCategoryId(cats[0].id);
+        if (recs.length > 0) setSelectedRecurrence(recs[2]); // Monthly by default
+        if (cats.length > 0) setSelectedCategory(cats[0]);
       } catch (error) {
         Alert.alert('Erreur', 'Impossible de charger la config.');
       } finally {
@@ -248,14 +252,20 @@ const EventOverlay = ({
                   </Pressable>
                 </View>
                 <FrequencyPicker
-                  selectedValue={selectedRecurrenceId as string}
-                  onValueChange={(id: string) => setSelectedRecurrenceId(id)}
+                  selectedValue={selectedRecurrence?.id as string}
+                  onValueChange={(id: string) => {
+                    const recurrence = allRecurrences.find((r) => r.id === id);
+                    if (recurrence) setSelectedRecurrence(recurrence);
+                  }}
                   allRecurrences={allRecurrences}
                 />
 
                 <CategoryPicker
-                  selectedValue={selectedCategoryId}
-                  onValueChange={(id: string) => setSelectedCategoryId(id)}
+                  selectedValue={selectedCategory?.id as string}
+                  onValueChange={(id: string) => {
+                    const category = allCategories.find((c) => c.id === id);
+                    if (category) setSelectedCategory(category);
+                  }}
                   allCategories={allCategories}
                 />
                 <View className="flex-row gap-3 items-center w-[100%] justify-evenly">

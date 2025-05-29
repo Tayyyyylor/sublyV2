@@ -46,7 +46,11 @@ export class Event {
   @Column('uuid')
   recurrenceId: string;
 
-  @ManyToOne(() => Recurrence, (r) => r.events, { nullable: false })
+  @ManyToOne(() => Recurrence, (r) => r.events, {
+    nullable: false,
+    eager: true,
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'recurrenceId' })
   recurrence: Recurrence;
 
@@ -64,6 +68,7 @@ export class Event {
   @ManyToOne(() => User, (u) => u.events, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
+
   @Column('uuid')
   userId: string;
 }

@@ -14,7 +14,6 @@ const FrequencyPicker = ({
   onValueChange,
   allRecurrences,
 }: PickerProps) => {
-  console.log('allRecurrences', allRecurrences);
   return (
     <Picker
       selectedValue={selectedValue}

@@ -13,6 +13,6 @@ export class Category {
   @Column()
   icon: string;
 
-  @OneToMany(() => Event, (event) => event.categoryId)
+  @OneToMany(() => Event, (event) => event.category)
   events: Event[];
 }

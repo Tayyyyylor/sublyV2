@@ -1,6 +1,6 @@
 import { TransacType } from './global';
 
-export interface CreateEventPayload {
+export interface EventCreateType {
   name: string;
   amount: number;
   type: TransacType;

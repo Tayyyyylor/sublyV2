@@ -83,10 +83,15 @@ async function bootstrapSeed() {
     if (autreCategory) {
       // Réassigner tous les événements des catégories obsolètes à "Autre"
       for (const obsoleteCat of obsoleteCategories) {
-        await eventRepo.update(
-          { categoryId: obsoleteCat.id },
-          { categoryId: autreCategory.id },
-        );
+        const eventsToUpdate = await eventRepo.find({
+          where: { category: { id: obsoleteCat.id } },
+          relations: ['category'],
+        });
+
+        for (const event of eventsToUpdate) {
+          event.category = autreCategory;
+          await eventRepo.save(event);
+        }
       }
 
       // Maintenant on peut supprimer les catégories obsolètes
