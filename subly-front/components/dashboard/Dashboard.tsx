@@ -3,15 +3,14 @@ import { Alert, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { format } from 'date-fns';
 
-import { EventType, FrequencyType } from '@/types/global';
+import { EventType, RecurrenceType } from '@/types/global';
 import { useAuth } from '@/context/useAuth';
 import { getAllEvent } from '@/services/eventService';
-import { today } from '@/helpers/global.utils';
+import { getMonthlyTotal, today } from '@/helpers/global.utils';
 import {
   getDailyTotal,
   doesEventOccurOnDate,
   generateMarkedDates,
-  getMonthlyTotal,
 } from './Dashboard.utils';
 
 import EventOverlay from '../events/EventOverlay';
@@ -31,7 +30,7 @@ const Dashboard = () => {
   );
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [allEvents, setAllEvents] = useState<EventType[]>([]);
-  const [allRecurrences, setAllRecurrences] = useState<FrequencyType[]>([]);
+  const [allRecurrences, setAllRecurrences] = useState<RecurrenceType[]>([]);
   const [events, setEvents] = useState<EventType[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [_, setIsLoading] = useState(true);

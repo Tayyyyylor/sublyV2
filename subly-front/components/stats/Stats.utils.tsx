@@ -1,16 +1,3 @@
-// utils/Stats.utils.ts
-import {
-  eachDayOfInterval,
-  format,
-  startOfMonth,
-  endOfMonth,
-  parseISO,
-  getDay,
-  getDate,
-  getMonth,
-} from 'date-fns';
-import { EventType, FrequencyType, CategoryType } from '@/types/global';
-
 export interface CategoryStat {
   categoryId: string;
   name: string;

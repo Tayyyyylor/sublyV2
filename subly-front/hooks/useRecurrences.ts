@@ -1,10 +1,10 @@
 // src/hooks/useRecurrences.ts
 import { getAllRecurrences } from '@/services/recurrenceService';
-import { FrequencyType } from '@/types/global';
+import { RecurrenceType } from '@/types/global';
 import { useQuery } from '@tanstack/react-query';
 
 export const useRecurrences = () => {
-  return useQuery<FrequencyType[]>({
+  return useQuery<RecurrenceType[]>({
     queryKey: ['recurrences'],
     queryFn: getAllRecurrences,
     staleTime: 1000 * 60 * 5,

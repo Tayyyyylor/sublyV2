@@ -60,12 +60,12 @@ export const getOneEvent = async (id: string) => {
   }
 };
 
-export const modifyEvent = async (
+export const updateEvent = async (
   id: string,
-  updateData: Partial<EventType>,
-) => {
+  event: Partial<EventCreateType>,
+): Promise<EventType> => {
   try {
-    const response = await axiosInstance.patch(`/events/${id}`, updateData);
+    const response = await axiosInstance.patch(`/events/${id}`, event);
     return response.data;
   } catch (error: any) {
     console.error(

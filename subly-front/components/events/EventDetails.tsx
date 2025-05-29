@@ -6,6 +6,7 @@ import { fr } from 'date-fns/locale';
 
 import { getOneEvent } from '@/services/eventService';
 import { EventType } from '@/types/global';
+import { translateFrequency } from '@/helpers/global.utils';
 
 const EventDetails = () => {
   const { id } = useLocalSearchParams();
@@ -18,27 +19,41 @@ const EventDetails = () => {
     return format(new Date(date), 'dd MMMM yyyy', { locale: fr });
   };
 
+  const displayFrequency = event?.recurrence?.frequency
+    ? translateFrequency(event?.recurrence?.frequency).toLowerCase()
+    : undefined;
+
   const infos = [
     {
       label: 'Fréquence',
-      value: event?.recurrence?.frequency || '',
+      value: displayFrequency || '',
+      hasBorder: true,
     },
     {
       label: 'Catégories',
       value: event?.category?.name || '',
+      hasBorder: true,
     },
     {
       label: 'Date de début',
       value: formatDate(event?.startDate),
+      hasBorder: true,
     },
     {
       label: 'Date de fin',
       value: formatDate(event?.endDate),
+      hasBorder: false,
     },
   ];
 
   const handleClickBack = () => {
     router.back();
+  };
+
+  const handleClickEdit = () => {
+    if (event) {
+      router.push(`/event/${event.id}/edit`);
+    }
   };
 
   useEffect(() => {
@@ -56,12 +71,17 @@ const EventDetails = () => {
 
   return (
     <SafeAreaView className="relative flex-1 items-center p-4">
-      <Pressable
-        onPress={handleClickBack}
-        className="flex-row justify-start w-full ml-10 mb-5"
-      >
-        <Text className="text-white text-[18px] font-bold">Retour</Text>
-      </Pressable>
+      <View className="flex-row justify-between items-center w-full p-4 mt-5">
+        <Pressable onPress={handleClickBack}>
+          <Text className="text-white text-[18px] font-bold">Retour</Text>
+        </Pressable>
+        <Pressable
+          className="bg-[#FBBF24] p-3 rounded-[5px]"
+          onPress={handleClickEdit}
+        >
+          <Text className=" text-[18px] font-bold">Modifier</Text>
+        </Pressable>
+      </View>
       <Text className="text-white text-[24px] font-bold mb-5">
         {event?.name}
       </Text>
@@ -74,17 +94,17 @@ const EventDetails = () => {
           {isExpense ? `-${event?.amount}€` : `+${event?.amount}€`}
         </Text>
       </View>
-      <View className="flex-column w-full p-5 gap-3">
+      <View className="flex-column w-[95%] rounded-[5px] bg-gray-800 mt-[30px]">
         {infos.map((info, index) => (
           <View
             key={index}
-            className="flex-row justify-between w-full border-white p-3 border"
+            className={`flex-row justify-between w-full ${info.hasBorder ? 'border-gray-600 border-b' : ''} p-4`}
           >
-            <Text className="text-white text-[18px] font-bold">
+            <Text className="text-[#FBBF24] text-[18px] font-bold">
               {info.label}
             </Text>
             <Text className="text-white text-[18px] font-bold">
-              {info.value}
+              {info.value === '' || info.value === undefined ? '-' : info.value}
             </Text>
           </View>
         ))}
