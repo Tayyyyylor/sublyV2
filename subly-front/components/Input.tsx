@@ -33,23 +33,24 @@ const Input = ({
     <View>
       <TextInput
         secureTextEntry={secureTextEntry ? !showPassword : false}
-        className={`bg-[white] p-3 w-full border-2 rounded-[5px] relative ${errorMessage ? 'border-red-500' : 'border-black-500'}`}
+        className={`bg-[#242323] p-4 w-full border-b-2 border-gray-400 rounded-[5px] relative ${errorMessage ? 'border-red-500' : 'border-gray-100'} text-white`}
         placeholder={placeholder}
         value={value}
-        placeholderTextColor="gray"
+        placeholderTextColor="white"
         onChangeText={onChangeText}
         textContentType="oneTimeCode"
         inputMode={inputMode}
+        keyboardAppearance="dark"
       />
       {togglePassword && (
         <TouchableOpacity
           onPress={togglePassword}
-          className="absolute top-3 right-2"
+          className="absolute top-4 right-2"
         >
           <Ionicons
             name={showPassword ? 'eye' : 'eye-off'}
             size={20}
-            color="black"
+            color="white"
           />
         </TouchableOpacity>
       )}

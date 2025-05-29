@@ -1,4 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
+import { createEvent } from '@/services/eventService';
+import { getAllCategories } from '@/services/categoryService';
+import { getAllRecurrences } from '@/services/recurrenceService';
+
+import { CategoryType, RecurrenceType, TransacType } from '@/types/global';
+
+import Input from '../Input';
+import FrequencyPicker from '../FrequencyPicker';
+import CategoryPicker from '../CategoryPicker';
+
 import {
   Alert,
   Animated,
@@ -7,18 +19,15 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
+  ScrollView,
+  Switch,
   Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-
-import { createEvent } from '@/services/eventService';
-import { FrequencyType } from '@/types/global';
-
-import Input from '../Input';
-import FrequencyPicker from '../FrequencyPicker';
+import { EventCreateType } from '@/types/event';
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -32,12 +41,24 @@ const EventOverlay = ({
 }: EventOverlayProps) => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [slideAnim] = useState(new Animated.Value(0));
+  const [_, setIsLoading] = useState(true);
+
+  const [allCategories, setAllCategories] = useState<CategoryType[]>([]);
+  const [allRecurrences, setAllRecurrences] = useState<RecurrenceType[]>([]);
+
   const [name, setName] = useState('');
   const [amount, setAmount] = useState<string>('');
-  const [selectedFrequency, setSelectedFrequency] =
-    useState<FrequencyType>('monthly');
+  const [selectedType, setSelectedType] = useState<TransacType>('EXPENSE');
+  const [startDate, setStartDate] = useState<Date>(new Date(selectedDate));
+  const [hasEndDate, setHasEndDate] = useState(false);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
-  const [date, setDate] = useState<Date>(new Date(selectedDate));
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType | null>(
+    null,
+  );
+  const [selectedRecurrence, setSelectedRecurrence] =
+    useState<RecurrenceType | null>(null);
+
   const inputData = [
     { placeholder: 'name', value: name, onChangeText: setName },
     {
@@ -48,16 +69,23 @@ const EventOverlay = ({
     },
   ];
 
-  const onChange = (_event: any, selectedDate?: Date) => {
+  const onChangeStartDate = (_event: any, selectedDate?: Date) => {
     if (selectedDate) {
       selectedDate.setHours(0, 0, 0, 0);
-      setDate(selectedDate);
+      setStartDate(selectedDate);
+    }
+  };
+
+  const onChangeEndDate = (_event: any, selectedDate?: Date) => {
+    if (selectedDate) {
+      selectedDate.setHours(0, 0, 0, 0);
+      setEndDate(selectedDate);
     }
   };
 
   const translateY = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [500, 0], // Départ depuis le bas (500) jusqu'à position finale (0)
+    outputRange: [500, 0],
   });
 
   const handleClose = () => {
@@ -74,29 +102,35 @@ const EventOverlay = ({
         useNativeDriver: true,
       }),
     ]).start(() => {
-      onClose(); // Appelé après la fin de l'animation
+      onClose();
     });
   };
 
   const clearFields = () => {
     setName('');
     setAmount('');
-    setSelectedFrequency('monthly');
-    setDate(new Date(selectedDate));
+    setSelectedRecurrence(null);
+    setSelectedCategory(null);
+    setStartDate(new Date(selectedDate));
+    setHasEndDate(false);
+    setEndDate(undefined);
   };
 
   const handleSubmit = async () => {
-    if (!name || !amount) {
-      Alert.alert('Erreur', 'Tous les champs sont obligatoires.');
+    if (!name || !amount || !selectedCategory || !selectedRecurrence) {
+      Alert.alert('Error', 'All fields are required.');
       return;
     }
     const sanitizedAmount = parseFloat(amount.replace(',', '.'));
     try {
-      const eventData = {
+      const eventData: EventCreateType = {
         name,
         amount: sanitizedAmount,
-        frequency: selectedFrequency,
-        startDate: date,
+        type: selectedType,
+        categoryId: selectedCategory.id,
+        recurrenceId: selectedRecurrence.id,
+        startDate,
+        endDate: hasEndDate ? endDate : undefined,
       };
       await createEvent(eventData);
       Alert.alert('Succès', 'Event créé avec succès !');
@@ -106,6 +140,27 @@ const EventOverlay = ({
       Alert.alert('Erreur', 'Impossible de se connecter.');
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const cats = await getAllCategories();
+        setAllCategories(cats);
+
+        const recs = await getAllRecurrences();
+        setAllRecurrences(recs);
+
+        if (recs.length > 0) setSelectedRecurrence(recs[2]); // Monthly by default
+        if (cats.length > 0) setSelectedCategory(cats[0]);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de charger la config.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     if (isVisible) {
@@ -123,7 +178,6 @@ const EventOverlay = ({
         }),
       ]).start();
     } else {
-      // Réinitialisation quand invisible
       fadeAnim.setValue(0);
       slideAnim.setValue(0);
     }
@@ -131,9 +185,18 @@ const EventOverlay = ({
 
   useEffect(() => {
     if (isVisible) {
-      setDate(new Date(selectedDate));
+      setStartDate(new Date(selectedDate));
+      setHasEndDate(false);
+      setEndDate(undefined);
     }
   }, [isVisible, selectedDate]);
+
+  const handleClickIncome = () => {
+    setSelectedType('INCOME');
+  };
+  const handleClickExpense = () => {
+    setSelectedType('EXPENSE');
+  };
 
   return (
     <Animated.View className="absolute inset-0" style={{ opacity: fadeAnim }}>
@@ -142,50 +205,119 @@ const EventOverlay = ({
       </TouchableWithoutFeedback>
 
       <Animated.View
-        className="absolute bottom-0 w-full bg-white rounded-t-3xl p-6"
+        className="absolute bottom-0 w-full bg-[#121212] rounded-t-3xl p-6"
         style={{
           transform: [{ translateY }],
-          maxHeight: '80%', // Limite à 80% de la hauteur
+          maxHeight: '80%',
         }}
       >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1"
-        >
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <SafeAreaView>
-              <View className="p-2 gap-5 mb-5">
-                {inputData.map((input, index) => (
-                  <Input
-                    key={index}
-                    inputMode={input.inputMode as InputModeOptions}
-                    placeholder={input.placeholder}
-                    onChangeText={input.onChangeText}
-                    value={input.value}
-                  />
-                ))}
-              </View>
-              <FrequencyPicker
-                selectedValue={selectedFrequency}
-                onValueChange={(itemValue) => setSelectedFrequency(itemValue)}
-              />
-
-              <View className="flex justify-center items-center">
-                <Text className="text-black font-bold text-[18px] mb-[20px]">
-                  Date de début
-                </Text>
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={date}
-                  is24Hour={true}
-                  onChange={onChange}
+        <ScrollView>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            className="flex-1 "
+          >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <SafeAreaView className="bg-[#121212]">
+                <View className="p-2 gap-5 mb-5">
+                  {inputData.map((input, index) => (
+                    <Input
+                      key={index}
+                      inputMode={input.inputMode as InputModeOptions}
+                      placeholder={input.placeholder}
+                      onChangeText={input.onChangeText}
+                      value={input.value}
+                    />
+                  ))}
+                </View>
+                <View className="flex-row gap-3 items-center w-[100%]">
+                  <Pressable
+                    className={`p-3 flex-1 ${
+                      selectedType === 'EXPENSE'
+                        ? 'bg-red-500'
+                        : 'bg-transparent'
+                    }`}
+                    onPress={handleClickExpense}
+                  >
+                    <Text className="text-white text-center">Dépenses</Text>
+                  </Pressable>
+                  <Pressable
+                    className={`p-3 flex-1 ${
+                      selectedType === 'INCOME'
+                        ? 'bg-green-500'
+                        : 'bg-transparent'
+                    }`}
+                    onPress={handleClickIncome}
+                  >
+                    <Text className="text-white text-center">Revenus</Text>
+                  </Pressable>
+                </View>
+                <FrequencyPicker
+                  selectedValue={selectedRecurrence?.id as string}
+                  onValueChange={(id: string) => {
+                    const recurrence = allRecurrences.find((r) => r.id === id);
+                    if (recurrence) setSelectedRecurrence(recurrence);
+                  }}
+                  allRecurrences={allRecurrences}
                 />
-              </View>
 
-              <Button title="Add" onPress={handleSubmit} />
-            </SafeAreaView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+                <CategoryPicker
+                  selectedValue={selectedCategory?.id as string}
+                  onValueChange={(id: string) => {
+                    const category = allCategories.find((c) => c.id === id);
+                    if (category) setSelectedCategory(category);
+                  }}
+                  allCategories={allCategories}
+                />
+                <View className="flex-row gap-3 items-center w-[100%] justify-evenly">
+                  <View className="flex justify-center items-center">
+                    <Text className="text-white font-bold text-[18px] mb-[20px]">
+                      Date de début
+                    </Text>
+                    <DateTimePicker
+                      className="text-white"
+                      textColor="white"
+                      themeVariant="dark"
+                      accentColor="white"
+                      testID="dateTimePicker"
+                      value={startDate}
+                      is24Hour={true}
+                      onChange={onChangeStartDate}
+                    />
+                  </View>
+
+                  <View className="flex justify-center items-center">
+                    <View className="flex-row items-center mb-[20px]">
+                      <Text className="text-white font-bold text-[18px] mr-2">
+                        Date de fin
+                      </Text>
+                      <Switch
+                        value={hasEndDate}
+                        onValueChange={setHasEndDate}
+                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                        thumbColor={hasEndDate ? '#f5dd4b' : '#f4f3f4'}
+                      />
+                    </View>
+                    {hasEndDate && (
+                      <DateTimePicker
+                        className="text-white"
+                        textColor="white"
+                        themeVariant="dark"
+                        accentColor="white"
+                        testID="dateTimePicker"
+                        value={endDate || startDate}
+                        is24Hour={true}
+                        onChange={onChangeEndDate}
+                        minimumDate={startDate}
+                      />
+                    )}
+                  </View>
+                </View>
+
+                <Button title="Add" onPress={handleSubmit} />
+              </SafeAreaView>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </Animated.View>
     </Animated.View>
   );

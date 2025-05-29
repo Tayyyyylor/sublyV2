@@ -49,7 +49,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await SecureStore.getItemAsync(TOKEN_KEY);
-
       if (storedToken) {
         try {
           const decoded = jwtDecode<{ exp: number }>(storedToken);

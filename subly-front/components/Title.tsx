@@ -7,7 +7,7 @@ interface TitleProps {
 
 const Title = ({ label }: TitleProps) => {
   return (
-    <Text className="text-xl font-bold text-black-600 text-center">
+    <Text className="text-[36px] font-bold text-white text-center">
       {label}
     </Text>
   );

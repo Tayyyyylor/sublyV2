@@ -11,9 +11,9 @@ const ButtonAdd = ({ openModal, className }: ButtonAddProps) => {
   return (
     <Pressable
       onPress={openModal}
-      className={`${className} bg-blue-500 w-[60px] h-[60px] rounded-full items-center justify-center shadow-lg`}
+      className={`${className} bg-yellow-400 w-[60px] h-[60px] rounded-full items-center justify-center shadow-lg`}
     >
-      <Ionicons name="add" size={32} color="white" />
+      <Ionicons name="add" size={32} color="black" />
     </Pressable>
   );
 };
