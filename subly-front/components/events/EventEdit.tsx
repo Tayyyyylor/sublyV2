@@ -62,34 +62,6 @@ const EventEdit = ({ event }: EventEditProps) => {
     }
   };
 
-  const handleDelete = () => {
-    Alert.alert(
-      'Confirmation',
-      'Voulez-vous vraiment supprimer cet événement ?',
-      [
-        {
-          text: 'Annuler',
-          style: 'cancel',
-        },
-        {
-          text: 'Supprimer',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await deleteEvent(event.id);
-              Alert.alert('Succès', 'Événement supprimé avec succès !');
-              router.back();
-            } catch (error) {
-              Alert.alert('Erreur', "Impossible de supprimer l'événement.");
-            }
-          },
-        },
-      ],
-    );
-  };
-
-  console.log('type', type);
-
   return (
     <SafeAreaView className="flex-1 bg-[#121212]">
       <View className="flex-row justify-between items-center w-full p-4">
@@ -195,15 +167,6 @@ const EventEdit = ({ event }: EventEditProps) => {
               />
             </View>
           </View>
-
-          <Pressable
-            className="bg-red-500 p-4 rounded-[5px] mt-6"
-            onPress={handleDelete}
-          >
-            <Text className="text-white text-center text-[18px] font-bold">
-              Mettre fin au mouvement
-            </Text>
-          </Pressable>
         </View>
       </ScrollView>
     </SafeAreaView>

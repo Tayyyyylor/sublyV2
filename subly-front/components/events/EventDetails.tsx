@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
-import { getOneEvent } from '@/services/eventService';
+import { deleteEvent, getOneEvent } from '@/services/eventService';
 import { EventType } from '@/types/global';
 import { translateFrequency } from '@/helpers/global.utils';
 
@@ -54,6 +54,32 @@ const EventDetails = () => {
     if (event) {
       router.push(`/event/${event.id}/edit`);
     }
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Confirmation',
+      'Voulez-vous vraiment supprimer cet événement ?',
+      [
+        {
+          text: 'Annuler',
+          style: 'cancel',
+        },
+        {
+          text: 'Supprimer',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteEvent(event?.id as string);
+              Alert.alert('Succès', 'Événement supprimé avec succès !');
+              router.back();
+            } catch (error) {
+              Alert.alert('Erreur', "Impossible de supprimer l'événement.");
+            }
+          },
+        },
+      ],
+    );
   };
 
   useEffect(() => {
@@ -109,6 +135,14 @@ const EventDetails = () => {
           </View>
         ))}
       </View>
+      <Pressable
+        className="bg-red-500 p-4 rounded-[5px] mt-6"
+        onPress={handleDelete}
+      >
+        <Text className="text-white text-center text-[18px] font-bold">
+          Mettre fin au mouvement
+        </Text>
+      </Pressable>
     </SafeAreaView>
   );
 };
