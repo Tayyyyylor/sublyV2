@@ -1,12 +1,12 @@
-import { Frequency, FrequencyType } from '@/types/global';
+import { translateFrequency } from '@/helpers/global.utils';
+import { RecurrenceType } from '@/types/global';
 import { Picker } from '@react-native-picker/picker';
 import React from 'react';
-import { translateFrequency } from './events/Events.utils';
 
 interface PickerProps {
   selectedValue: string;
   onValueChange: (e: any) => void;
-  allRecurrences: FrequencyType[];
+  allRecurrences: RecurrenceType[];
 }
 
 const FrequencyPicker = ({

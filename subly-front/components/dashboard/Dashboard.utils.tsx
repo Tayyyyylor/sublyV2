@@ -1,4 +1,4 @@
-import { EventType, FrequencyType } from '@/types/global';
+import { EventType, RecurrenceType } from '@/types/global';
 import {
   format,
   addDays,
@@ -77,7 +77,7 @@ export const doesEventOccurOnDate = (
 
 export const generateMarkedDates = (
   events: EventType[],
-  recurrences: FrequencyType[],
+  recurrences: RecurrenceType[],
   selectedDate: string,
 ) => {
   const marked: Record<
@@ -96,7 +96,7 @@ export const generateMarkedDates = (
   };
 
   events.forEach((event) => {
-    const recurrence = recurrences.find((r) => r.id === event.recurrenceId);
+    const recurrence = recurrences.find((r) => r.id === event.recurrence.id);
     if (!recurrence) return;
 
     const startDate = new Date(event.startDate);
@@ -146,53 +146,4 @@ export const generateMarkedDates = (
   });
 
   return marked;
-};
-
-export const getMonthlyTotal = (
-  events: EventType[],
-  currentMonth: Date,
-  recurrences: FrequencyType[],
-): number => {
-  return events.reduce((total, event) => {
-    const recurrence = recurrences.find((r) => r.id === event.recurrenceId);
-    if (!recurrence) return total;
-
-    const startDate = new Date(event.startDate);
-    const endDate =
-      event.endDate ||
-      new Date(new Date().setFullYear(new Date().getFullYear() + 1));
-    let currentDate = startDate;
-    let monthlyAmount = 0;
-
-    while (isBefore(currentDate, endDate)) {
-      if (isSameMonth(currentDate, currentMonth)) {
-        monthlyAmount +=
-          Number(event.amount) * (event.type === 'EXPENSE' ? -1 : 1);
-      }
-
-      switch (recurrence.frequency) {
-        case 'ONCE':
-          currentDate = new Date(endDate.getTime());
-          currentDate.setDate(currentDate.getDate() + 1);
-          break;
-        case 'DAILY':
-          currentDate = addDays(currentDate, 1);
-          break;
-        case 'WEEKLY':
-          currentDate = addWeeks(currentDate, 1);
-          break;
-        case 'MONTHLY':
-          currentDate = addMonths(currentDate, 1);
-          break;
-        case 'QUARTERLY':
-          currentDate = addMonths(currentDate, 3);
-          break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
-      }
-    }
-
-    return total + monthlyAmount;
-  }, 0);
 };

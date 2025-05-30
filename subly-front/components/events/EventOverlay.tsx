@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { createEvent } from '@/services/eventService';
+import { createEvent, updateEvent } from '@/services/eventService';
 import { getAllCategories } from '@/services/categoryService';
 import { getAllRecurrences } from '@/services/recurrenceService';
 
@@ -10,6 +10,7 @@ import { CategoryType, RecurrenceType, TransacType } from '@/types/global';
 import Input from '../Input';
 import FrequencyPicker from '../FrequencyPicker';
 import CategoryPicker from '../CategoryPicker';
+import TypeSelector from '../TypeSelector';
 
 import {
   Alert,
@@ -20,7 +21,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Switch,
   Text,
@@ -28,6 +28,7 @@ import {
   View,
 } from 'react-native';
 import { EventCreateType } from '@/types/event';
+
 interface EventOverlayProps {
   isVisible: boolean;
   onClose: () => void;
@@ -205,118 +206,95 @@ const EventOverlay = ({
       </TouchableWithoutFeedback>
 
       <Animated.View
-        className="absolute bottom-0 w-full bg-[#121212] rounded-t-3xl p-6"
+        className="w-full bg-[#121212] rounded-t-3xl"
         style={{
           transform: [{ translateY }],
           maxHeight: '80%',
         }}
       >
-        <ScrollView>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="flex-1 "
-          >
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-              <SafeAreaView className="bg-[#121212]">
-                <View className="p-2 gap-5 mb-5">
-                  {inputData.map((input, index) => (
-                    <Input
-                      key={index}
-                      inputMode={input.inputMode as InputModeOptions}
-                      placeholder={input.placeholder}
-                      onChangeText={input.onChangeText}
-                      value={input.value}
-                    />
-                  ))}
-                </View>
-                <View className="flex-row gap-3 items-center w-[100%]">
-                  <Pressable
-                    className={`p-3 flex-1 ${
-                      selectedType === 'EXPENSE'
-                        ? 'bg-red-500'
-                        : 'bg-transparent'
-                    }`}
-                    onPress={handleClickExpense}
-                  >
-                    <Text className="text-white text-center">Dépenses</Text>
-                  </Pressable>
-                  <Pressable
-                    className={`p-3 flex-1 ${
-                      selectedType === 'INCOME'
-                        ? 'bg-green-500'
-                        : 'bg-transparent'
-                    }`}
-                    onPress={handleClickIncome}
-                  >
-                    <Text className="text-white text-center">Revenus</Text>
-                  </Pressable>
-                </View>
-                <FrequencyPicker
-                  selectedValue={selectedRecurrence?.id as string}
-                  onValueChange={(id: string) => {
-                    const recurrence = allRecurrences.find((r) => r.id === id);
-                    if (recurrence) setSelectedRecurrence(recurrence);
-                  }}
-                  allRecurrences={allRecurrences}
-                />
+        <ScrollView className="p-6">
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <View className="p-2 gap-5 mb-5">
+                {inputData.map((input, index) => (
+                  <Input
+                    key={index}
+                    inputMode={input.inputMode as InputModeOptions}
+                    placeholder={input.placeholder}
+                    onChangeText={input.onChangeText}
+                    value={input.value}
+                  />
+                ))}
+              </View>
+              <TypeSelector
+                selectedType={selectedType}
+                setSelectedType={setSelectedType}
+              />
+              <FrequencyPicker
+                selectedValue={selectedRecurrence?.id as string}
+                onValueChange={(id: string) => {
+                  const recurrence = allRecurrences.find((r) => r.id === id);
+                  if (recurrence) setSelectedRecurrence(recurrence);
+                }}
+                allRecurrences={allRecurrences}
+              />
 
-                <CategoryPicker
-                  selectedValue={selectedCategory?.id as string}
-                  onValueChange={(id: string) => {
-                    const category = allCategories.find((c) => c.id === id);
-                    if (category) setSelectedCategory(category);
-                  }}
-                  allCategories={allCategories}
-                />
-                <View className="flex-row gap-3 items-center w-[100%] justify-evenly">
-                  <View className="flex justify-center items-center">
-                    <Text className="text-white font-bold text-[18px] mb-[20px]">
-                      Date de début
+              <CategoryPicker
+                selectedValue={selectedCategory?.id as string}
+                onValueChange={(id: string) => {
+                  const category = allCategories.find((c) => c.id === id);
+                  if (category) setSelectedCategory(category);
+                }}
+                allCategories={allCategories}
+              />
+              <View className="flex-row gap-3 items-center w-[100%] justify-evenly">
+                <View className="flex justify-center items-center">
+                  <Text className="text-white font-bold text-[18px] mb-[20px]">
+                    Date de début
+                  </Text>
+                  <DateTimePicker
+                    className="text-white"
+                    textColor="white"
+                    themeVariant="dark"
+                    accentColor="white"
+                    testID="dateTimePicker"
+                    value={startDate}
+                    is24Hour={true}
+                    onChange={onChangeStartDate}
+                  />
+                </View>
+
+                <View className="flex justify-center items-center">
+                  <View className="flex-row items-center mb-[20px]">
+                    <Text className="text-white font-bold text-[18px] mr-2">
+                      Date de fin
                     </Text>
+                    <Switch
+                      value={hasEndDate}
+                      onValueChange={setHasEndDate}
+                      trackColor={{ false: '#767577', true: '#81b0ff' }}
+                      thumbColor={hasEndDate ? '#f5dd4b' : '#f4f3f4'}
+                    />
+                  </View>
+                  {hasEndDate && (
                     <DateTimePicker
                       className="text-white"
                       textColor="white"
                       themeVariant="dark"
                       accentColor="white"
                       testID="dateTimePicker"
-                      value={startDate}
+                      value={endDate || startDate}
                       is24Hour={true}
-                      onChange={onChangeStartDate}
+                      onChange={onChangeEndDate}
+                      minimumDate={startDate}
                     />
-                  </View>
-
-                  <View className="flex justify-center items-center">
-                    <View className="flex-row items-center mb-[20px]">
-                      <Text className="text-white font-bold text-[18px] mr-2">
-                        Date de fin
-                      </Text>
-                      <Switch
-                        value={hasEndDate}
-                        onValueChange={setHasEndDate}
-                        trackColor={{ false: '#767577', true: '#81b0ff' }}
-                        thumbColor={hasEndDate ? '#f5dd4b' : '#f4f3f4'}
-                      />
-                    </View>
-                    {hasEndDate && (
-                      <DateTimePicker
-                        className="text-white"
-                        textColor="white"
-                        themeVariant="dark"
-                        accentColor="white"
-                        testID="dateTimePicker"
-                        value={endDate || startDate}
-                        is24Hour={true}
-                        onChange={onChangeEndDate}
-                        minimumDate={startDate}
-                      />
-                    )}
-                  </View>
+                  )}
                 </View>
+              </View>
 
-                <Button title="Add" onPress={handleSubmit} />
-              </SafeAreaView>
-            </TouchableWithoutFeedback>
-          </KeyboardAvoidingView>
+              <Button title="Add" onPress={handleSubmit} />
+            </View>
+          </TouchableWithoutFeedback>
         </ScrollView>
       </Animated.View>
     </Animated.View>

@@ -3,7 +3,7 @@ import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import BadgeRecurrence from '../BadgeRecurrence';
 import { useRecurrences } from '@/hooks/useRecurrences';
-import { translateFrequency } from './Events.utils';
+import { translateFrequency } from '@/helpers/global.utils';
 
 interface EventProps {
   id: string;
@@ -14,7 +14,7 @@ interface EventProps {
 const EventCard = ({ data, onPress }: EventProps) => {
   const { data: recurrences } = useRecurrences();
 
-  const recurrence = recurrences?.find((r) => r.id === data.recurrenceId);
+  const recurrence = recurrences?.find((r) => r.id === data.recurrence?.id);
 
   const displayFrequency = recurrence?.frequency
     ? translateFrequency(recurrence.frequency)

@@ -1,13 +1,30 @@
 // src/hooks/useRecurrences.ts
+import { useState, useEffect } from 'react';
+import { Alert } from 'react-native';
+import { RecurrenceType } from '@/types/global';
 import { getAllRecurrences } from '@/services/recurrenceService';
-import { FrequencyType } from '@/types/global';
-import { useQuery } from '@tanstack/react-query';
 
 export const useRecurrences = () => {
-  return useQuery<FrequencyType[]>({
-    queryKey: ['recurrences'],
-    queryFn: getAllRecurrences,
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 30,
-  });
+  const [recurrences, setRecurrences] = useState<RecurrenceType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRecurrences = async () => {
+      try {
+        const data = await getAllRecurrences();
+        setRecurrences(data);
+        setError(null);
+      } catch (err) {
+        setError('Impossible de charger les récurrences');
+        Alert.alert('Erreur', 'Impossible de charger les récurrences');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecurrences();
+  }, []);
+
+  return { recurrences, isLoading, error };
 };
