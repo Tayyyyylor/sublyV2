@@ -72,7 +72,7 @@ const EventDetails = () => {
             try {
               await deleteEvent(event?.id as string);
               Alert.alert('Succès', 'Événement supprimé avec succès !');
-              router.back();
+              router.push('/');
             } catch (error) {
               Alert.alert('Erreur', "Impossible de supprimer l'événement.");
             }
