@@ -22,6 +22,15 @@ export const registerUser = async (userData: User) => {
   }
 };
 
+export const deleteUser = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'utilisateur :", error);
+  }
+};
+
 export const loginUser = async (
   userData: User,
   signIn: (token: string) => void,

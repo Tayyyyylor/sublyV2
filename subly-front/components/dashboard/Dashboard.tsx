@@ -38,8 +38,6 @@ const Dashboard = () => {
   const dailyTotal = getDailyTotal(events);
   const monthlyTotal = getMonthlyTotal(allEvents, currentMonth, allRecurrences);
 
-  console.log('allEvents dashboard', allEvents);
-
   const openModal = () => {
     setIsOverlayVisible(true);
   };
