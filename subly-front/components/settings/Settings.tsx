@@ -40,10 +40,12 @@ const Settings = () => {
 
       <Button title="Se déconnecter" color="red" onPress={signOut} />
       <Pressable
-        className="bg-red-500 p-3 rounded-md mt-3"
+        className="bg-red-500 p-4 rounded-[5px] mt-6"
         onPress={handleDelete}
       >
-        <Text className="text-white text-center">Supprimer le compte</Text>
+        <Text className="text-white text-center text-[18px] font-bold">
+          Supprimer le compte
+        </Text>
       </Pressable>
 
       <Text className="text-white text-center">
