@@ -102,7 +102,7 @@ const Dashboard = () => {
         <Text className="text-[30px] text-center font-bold text-white">
           Total au mois{' '}
           <Text
-            className={`${monthlyTotal >= 0 ? 'text-emerald-500' : 'text-red-400'}`}
+            className={`${monthlyTotal >= 0 ? 'text-emerald-600' : 'text-red-600'}`}
           >
             {monthlyTotal}€
           </Text>

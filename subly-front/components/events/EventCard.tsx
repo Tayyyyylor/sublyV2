@@ -12,7 +12,7 @@ interface EventProps {
 }
 
 const EventCard = ({ data, onPress }: EventProps) => {
-  const { data: recurrences } = useRecurrences();
+  const { recurrences } = useRecurrences();
 
   const recurrence = recurrences?.find((r) => r.id === data.recurrence?.id);
 
