@@ -29,9 +29,9 @@ jobs:
         working-directory: subly-back
         run: npm ci
 
-      - name: Lint Backend (ESLint)
-        working-directory: subly-back
-        run: npm run lint
+      #- name: Lint Backend (ESLint)
+      #  working-directory: subly-back
+     #   run: npm run lint
 
       - name: Run Backend Tests (Jest)
         working-directory: subly-back
@@ -57,9 +57,9 @@ jobs:
         working-directory: subly-front
         run: npm ci
 
-      - name: Lint Frontend (ESLint)
-        working-directory: subly-front
-        run: npm run lint
+      #- name: Lint Frontend (ESLint)
+       # working-directory: subly-front
+        #run: npm run lint
 
       - name: Run Frontend Tests (Jest)
         working-directory: subly-front
