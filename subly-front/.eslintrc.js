@@ -1,11 +1,13 @@
-import globals from 'globals';
-import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js';
-import { fixupConfigRules } from '@eslint/compat';
-import configPrettier from 'eslint-config-prettier';
+// subly-front/.eslintrc.cjs
 
-export default [
+const globals = require('globals');
+const pluginJs = require('@eslint/js');
+const tseslint = require('typescript-eslint');
+const pluginReactConfig = require('eslint-plugin-react/configs/recommended.js');
+const { fixupConfigRules } = require('@eslint/compat');
+const configPrettier = require('eslint-config-prettier');
+
+module.exports = [
   { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
   {
     languageOptions: {
@@ -21,16 +23,16 @@ export default [
   {
     plugins: ['prettier'],
     rules: {
-      'prettier/prettier': 'error', // Ajoute une règle ESLint pour Prettier
-      'react/react-in-jsx-scope': 'off', // Déjà configuré
+      'prettier/prettier': 'error',
+      'react/react-in-jsx-scope': 'off',
     },
   },
   {
     settings: {
       react: {
-        version: 'detect', // Détecte automatiquement la version de React
+        version: 'detect',
       },
     },
   },
-  ...configPrettier, // Assure que les règles ESLint n'entrent pas en conflit avec Prettier
+  ...configPrettier,
 ];
