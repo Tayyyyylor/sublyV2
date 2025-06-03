@@ -1,0 +1,4 @@
+.env
+
+/subly-back/node_modules
+/subly-back/dist
