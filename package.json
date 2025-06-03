@@ -1,0 +1,13 @@
+{
+  "name": "subly",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky install",
+    "test:back": "cd subly-back && npm test",
+    "test:front": "cd subly-front && npm test",
+    "test:all": "npm run test:back && npm run test:front"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
