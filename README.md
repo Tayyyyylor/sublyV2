@@ -13,7 +13,7 @@
 ```env
 # Configuration du serveur
 PORT=3000
-NODE_ENV=development
+NODE_ENV=developmentcc
 
 # Ajoutez ici vos autres variables d'environnement
 # DATABASE_URL=
