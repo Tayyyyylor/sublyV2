@@ -11,6 +11,7 @@ async function bootstrapSeed() {
   const catRepo = ds.getRepository(Category);
   const recRepo = ds.getRepository(Recurrence);
   const eventRepo = ds.getRepository(Event);
+  console.log('✅ Seed : catégories et récurrences insérées.');
 
   // 1) Les catégories prédéfinies
   const categories = [

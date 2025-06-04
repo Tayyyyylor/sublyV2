@@ -19,7 +19,11 @@ export class EventsService {
       userId: user.id,
       user,
     });
-    return this.eventsRepository.save(event);
+    await this.eventsRepository.save(event);
+    return this.eventsRepository.findOne({
+      where: { id: event.id },
+      relations: ['category', 'recurrence'],
+    });
   }
 
   findAll() {

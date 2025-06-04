@@ -9,7 +9,7 @@ services:
 
     # on remplace la commande de démarrage par le “watch mode” de NestJS
     command: >
-      sh -c "npm install && npm run start:dev"
+      sh -c "npm install && npm run seed && npm run start:dev"
 
     # on précise que, en dev, on veut NODE_ENV=development
     environment:
