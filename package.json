@@ -2,10 +2,11 @@
   "name": "subly",
   "version": "1.0.0",
   "scripts": {
-    "prepare": "husky install",
-    "test:back": "cd subly-back && npm test",
-    "test:front": "cd subly-front && npm test",
-    "test:all": "npm run test:back && npm run test:front"
+    "prepare": "husky",
+    "test:back": "cd subly-back && npm test -- --watchAll=false",
+    "test:front": "cd subly-front && npm test -- --watchAll=false",
+    "test:all": "npm run test:back && npm run test:front",
+    "docker": "docker-compose up --build"
   },
   "devDependencies": {
     "husky": "^9.1.7"
