@@ -1,4 +1,3 @@
-// src/categories/category.controller.ts
 import {
   Controller,
   Get,
@@ -11,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CategoryService } from './category.service';
 
 @Controller('categories')

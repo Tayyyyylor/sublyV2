@@ -1,4 +1,4 @@
-import { Event } from 'src/events/event.entity';
+import { Event } from '../events/event.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum Frequency {
@@ -17,7 +17,7 @@ export class Recurrence {
 
   @Column({
     default: Frequency.MONTHLY,
-    type: 'enum',
+    type: 'simple-enum',
     enum: Frequency,
   })
   frequency: Frequency;

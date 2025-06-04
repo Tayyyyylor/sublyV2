@@ -1,7 +1,6 @@
-// import { Category } from 'src/categories/category.entity';
-import { Category } from 'src/categories/category.entity';
-import { Recurrence } from 'src/recurrence/recurrence.entity';
-import { User } from 'src/users/user.entity';
+import { Category } from '../categories/category.entity';
+import { Recurrence } from '../recurrence/recurrence.entity';
+import { User } from '../users/user.entity';
 import {
   Entity,
   Column,
@@ -22,7 +21,7 @@ export class Event {
 
   @Column({
     default: 'EXPENSE',
-    type: 'enum',
+    type: 'simple-enum',
     enum: EventType,
   })
   type: EventType;
@@ -34,13 +33,14 @@ export class Event {
   amount: number;
 
   @Column({
-    type: 'timestamptz',
     nullable: false,
-    default: () => 'NOW()',
+    default: () => 'CURRENT_TIMESTAMP',
   })
   startDate: Date;
 
-  @Column('timestamptz', { nullable: true })
+  @Column({
+    nullable: true,
+  })
   endDate?: Date;
 
   @Column('uuid')
