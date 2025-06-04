@@ -1,4 +1,3 @@
-// src/hooks/useRecurrences.ts
 import { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { RecurrenceType } from '@/types/global';

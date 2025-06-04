@@ -1,6 +1,5 @@
-// src/categories/category.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Event } from 'src/events/event.entity';
+import { Event } from '../events/event.entity';
 
 @Entity('categories')
 export class Category {
