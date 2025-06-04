@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node.js for backend
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install Backend Dependencies
         working-directory: subly-back
@@ -35,7 +35,7 @@ jobs:
 
       - name: Run Backend Tests (Jest)
         working-directory: subly-back
-        run: npm run test -- --coverage
+        run: npm run test
 
       - name: Build Backend (TypeScript → JavaScript)
         working-directory: subly-back
@@ -76,7 +76,7 @@ jobs:
       - name: Setup Node.js (facultatif)
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Build production Docker image
         working-directory: subly-back
