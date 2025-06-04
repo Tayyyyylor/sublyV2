@@ -34,12 +34,7 @@ describe('Category Integration (GET endpoints)', () => {
           type: 'sqlite',
           database: ':memory:',
           dropSchema: true,
-          entities: [
-            User,
-            Category,
-            Event,
-            Recurrence, // ← on importe la vraie entité Recurrence
-          ],
+          entities: [User, Category, Event, Recurrence],
           synchronize: true,
         }),
         UsersModule,
@@ -91,7 +86,7 @@ describe('Category Integration (GET endpoints)', () => {
   });
 
   describe('GET /categories', () => {
-    it("devrait retourner toutes les catégories de l'utilisateur", async () => {
+    it('should return all categories', async () => {
       const response = await request(app.getHttpServer())
         .get('/categories')
         .set('Authorization', `Bearer ${jwtToken}`)
@@ -115,13 +110,13 @@ describe('Category Integration (GET endpoints)', () => {
       });
     });
 
-    it("devrait retourner 401 sans token d'authentification", async () => {
+    it('should return 401 without authentication', async () => {
       await request(app.getHttpServer()).get('/categories').expect(401);
     });
   });
 
   describe('GET /categories/:id', () => {
-    it('devrait retourner une catégorie spécifique', async () => {
+    it('should return a specific category', async () => {
       const category = await categoryRepo.findOne({ where: { name: 'FOOD' } });
       if (!category) throw new Error('Category not found');
 
@@ -137,14 +132,14 @@ describe('Category Integration (GET endpoints)', () => {
       });
     });
 
-    it('devrait retourner 404 pour un ID inexistant', async () => {
+    it('should return 404 for a non-existent ID', async () => {
       await request(app.getHttpServer())
         .get('/categories/00000000-0000-0000-0000-000000000000')
         .set('Authorization', `Bearer ${jwtToken}`)
         .expect(404);
     });
 
-    it("devrait retourner 401 sans token d'authentification", async () => {
+    it('should return 401 without authentication', async () => {
       const category = await categoryRepo.findOne({ where: { name: 'FOOD' } });
       if (!category) throw new Error('Category not found');
 
