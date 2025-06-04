@@ -1,6 +1,7 @@
 # 1) Stage de build
 FROM node:20-alpine AS builder
 WORKDIR /app
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -34,4 +35,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3000
 
 # Commande pour lancer le serveur
-CMD ["node", "dist/main"]
+CMD ["sh", "-c", "node dist/seed.js && node dist/main.js"]
