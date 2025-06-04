@@ -71,6 +71,7 @@ jobs:
     name: Build & Push Docker Image (Backend)
     runs-on: ubuntu-latest
     needs: backend-tests
+    if: github.ref == 'refs/heads/master'
     # Ce job ne dépend que de backend-tests, pas frontend-tests
     steps:
       - name: Checkout repository
