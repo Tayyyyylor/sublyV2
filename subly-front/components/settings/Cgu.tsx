@@ -1,7 +1,10 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import DefaultButton from '../DefaultButton';
+import { useRouter } from 'expo-router';
 
 const Cgu = () => {
+  const router = useRouter();
   const data = [
     {
       title: '1. INTRODUCTION',
@@ -69,11 +72,16 @@ const Cgu = () => {
   ];
   return (
     <SafeAreaView>
-      <ScrollView>
-        <Text>POLITIQUE DE CONFIDENTIALITÉ</Text>
-        <View>
+      <View className="flex-row justify-between items-center">
+        <Button title="Retour" onPress={() => router.back()} />
+      </View>
+      <ScrollView className="p-5">
+        <Text className="text-white text-[24px] font-bold text-center mb-10">
+          POLITIQUE DE CONFIDENTIALITÉ
+        </Text>
+        <View className="flex-column gap-5">
           {data.map((item, index) => (
-            <View key={index}>
+            <View key={index} className="flex-column gap-2">
               <Text className="text-white text-[18px] font-bold">
                 {item.title}
               </Text>
