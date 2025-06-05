@@ -1,6 +1,4 @@
-import { useAuth } from '@/context/useAuth';
 import axiosInstance from '../helpers/axiosInstance';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 
 interface User {

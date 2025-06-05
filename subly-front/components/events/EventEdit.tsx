@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { CategoryType, EventType, RecurrenceType } from '@/types/global';
-import { updateEvent, deleteEvent } from '@/services/eventService';
+import { updateEvent } from '@/services/eventService';
 import Input from '../Input';
 import FrequencyPicker from '../FrequencyPicker';
 import CategoryPicker from '../CategoryPicker';

@@ -30,3 +30,8 @@ export interface EventType {
   recurrence: RecurrenceType;
   userId: string;
 }
+
+export interface UserType {
+  username: string;
+  id: string;
+}
