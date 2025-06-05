@@ -15,15 +15,12 @@ jest.mock('axios', () => {
   };
 });
 
-// Simuler une requête GET fictive
-const mockUrl = '/test-endpoint';
 
 describe('axiosInstance', () => {
   let requestInterceptor: Function;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Simuler l'ajout d'un intercepteur
     requestInterceptor = async (config: any) => {
       const token = await SecureStore.getItemAsync('session');
       if (token) {
@@ -33,7 +30,7 @@ describe('axiosInstance', () => {
     };
   });
 
-  it('ajoute le token Authorization dans les headers si présent', async () => {
+  it('should add the Authorization header if a token is present', async () => {
     const fakeToken = 'fake.jwt.token';
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(fakeToken);
 
@@ -44,7 +41,7 @@ describe('axiosInstance', () => {
     expect(SecureStore.getItemAsync).toHaveBeenCalledWith('session');
   });
 
-  it("n'ajoute pas de header Authorization si pas de token", async () => {
+  it("should not add the Authorization header if no token is present", async () => {
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
 
     const testConfig = { headers: {} };
@@ -53,7 +50,7 @@ describe('axiosInstance', () => {
     expect(updatedConfig.headers.Authorization).toBeUndefined();
   });
 
-  it('utilise la bonne URL de base', () => {
+  it('should use the correct base URL', () => {
     const baseURL = axiosInstance.defaults.baseURL;
     expect(baseURL).toMatch(/localhost:3000|http/);
   });

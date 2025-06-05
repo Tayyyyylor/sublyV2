@@ -1,6 +1,5 @@
 // components/__tests__/dashboard/Calendar.spec.tsx
 
-// 1. On moque react-native-calendars pour intercepter les props
 jest.mock('react-native-calendars', () => {
   const React = require('react');
   return {
@@ -20,7 +19,6 @@ import { LocaleConfig } from 'react-native-calendars';
 import { Text, TouchableOpacity } from 'react-native';
 import CalendarComponent from '@/components/dashboard/Calendar';
 
-// Mock interne qui affiche les props et simule les press
 const __CalendarMock = ({
   onDayPress,
   onMonthChange,
@@ -30,7 +28,6 @@ const __CalendarMock = ({
   return (
     <React.Fragment>
       <React.Fragment>
-        {/* Simule un jour « 2025-05-20 » */}
         <TouchableOpacity
           testID="DAY_BUTTON"
           onPress={() => onDayPress({ dateString: '2025-05-20' })}
@@ -38,7 +35,6 @@ const __CalendarMock = ({
           <Text>2025-05-20</Text>
         </TouchableOpacity>
 
-        {/* Simule un changement de mois */}
         <TouchableOpacity
           testID="MONTH_CHANGE_BUTTON"
           onPress={() =>
@@ -48,7 +44,6 @@ const __CalendarMock = ({
           <Text>Change Month</Text>
         </TouchableOpacity>
 
-        {/* Expose markedDates et theme pour vérification */}
         <Text testID="MARKED_DATES">{JSON.stringify(markedDates)}</Text>
         <Text testID="THEME">{JSON.stringify(theme)}</Text>
       </React.Fragment>
@@ -57,7 +52,7 @@ const __CalendarMock = ({
 };
 
 describe('<CalendarComponent />', () => {
-  it('configure bien le local « fr » et transmet le theme+markedDates', () => {
+  it('should configure the locale "fr" and pass the theme+markedDates', () => {
     expect(LocaleConfig.locales['fr']).toBeUndefined();
 
     const fakeMarked = {
@@ -72,21 +67,18 @@ describe('<CalendarComponent />', () => {
       />,
     );
 
-    // Vérifie que la locale a été configurée
     expect(LocaleConfig.locales['fr']).toBeDefined();
     expect(LocaleConfig.defaultLocale).toBe('fr');
 
-    // Vérifie le markedDates transmis
     const markedText = getByTestId('MARKED_DATES').props.children;
     expect(JSON.parse(markedText)).toEqual(fakeMarked);
 
-    // Vérifie une clé de theme
     const theme = JSON.parse(getByTestId('THEME').props.children);
     expect(theme.calendarBackground).toBe('#121212');
     expect(theme.todayTextColor).toBe('#FBBF24');
   });
 
-  it('appelle onDayPress avec l’objet complet { dateString: … }', () => {
+  it('should call onDayPress with the complete object { dateString: … }', () => {
     const onDayPress = jest.fn();
     const { getByTestId } = render(
       <CalendarComponent onDayPress={onDayPress} markedDates={{}} />,
@@ -94,11 +86,10 @@ describe('<CalendarComponent />', () => {
 
     fireEvent.press(getByTestId('DAY_BUTTON'));
 
-    // ATTENTION : onDayPress est appelé avec l’objet { dateString: '2025-05-20' }
     expect(onDayPress).toHaveBeenCalledWith({ dateString: '2025-05-20' });
   });
 
-  it('appelle onMonthChange avec l’objet Date correspondant', () => {
+  it('should call onMonthChange with the corresponding Date object', () => {
     const onMonthChange = jest.fn();
     const { getByTestId } = render(
       <CalendarComponent

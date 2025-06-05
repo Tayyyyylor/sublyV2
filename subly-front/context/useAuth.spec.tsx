@@ -18,8 +18,7 @@ describe('AuthContext', () => {
     jest.clearAllMocks();
   });
 
-  it('charge un token valide depuis SecureStore', async () => {
-    // mock de l'expiration + user (2 appels à jwtDecode dans ce test)
+  it('should load a valid token from SecureStore', async () => {
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(fakeToken);
     (jwtDecode as jest.Mock)
       .mockReturnValueOnce({ exp: Date.now() / 1000 + 3600 }) // pour validité
@@ -41,7 +40,7 @@ describe('AuthContext', () => {
     });
   });
 
-  it('supprime un token expiré', async () => {
+  it('should delete an expired token', async () => {
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(fakeToken);
     (jwtDecode as jest.Mock).mockReturnValue({ exp: Date.now() / 1000 - 10 }); // expiré
 
@@ -61,7 +60,7 @@ describe('AuthContext', () => {
     });
   });
 
-  it('signIn stocke et met à jour le token', async () => {
+  it('should store and update the token', async () => {
     (jwtDecode as jest.Mock).mockReturnValue({ username: 'John', sub: '123' });
 
     let contextValue: ReturnType<typeof useAuth> = {} as any;
@@ -87,7 +86,7 @@ describe('AuthContext', () => {
     });
   });
 
-  it('signOut supprime le token', async () => {
+  it('should delete the token', async () => {
     (jwtDecode as jest.Mock).mockReturnValue({ username: 'John', sub: '123' });
 
     let contextValue: ReturnType<typeof useAuth> = {} as any;

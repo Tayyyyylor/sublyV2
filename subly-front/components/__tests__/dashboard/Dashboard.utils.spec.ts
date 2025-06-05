@@ -1,4 +1,3 @@
-// components/__tests__/dashboard/Dashboard.utils.spec.ts
 
 import {
   doesEventOccurOnDate,
@@ -15,7 +14,7 @@ import { addDays, addWeeks, addMonths, addYears, format } from 'date-fns';
 
 describe('Dashboard.utils', () => {
   describe('getDailyTotal', () => {
-    it('calcul le total net pour la journée', () => {
+    it('should calculate the net total for the day', () => {
       const events: EventType[] = [
         {
           id: '1',
@@ -41,7 +40,7 @@ describe('Dashboard.utils', () => {
       expect(getDailyTotal(events)).toBe(60);
     });
 
-    it('retourne zero sans evenement', () => {
+    it('should return zero without event', () => {
       expect(getDailyTotal([])).toBe(0);
     });
   });
@@ -66,7 +65,7 @@ describe('Dashboard.utils', () => {
       };
     };
 
-    it('renvoie true si targetDate est exactement startDate', () => {
+    it('should return true if targetDate is exactly startDate', () => {
       const ev = makeEvent(baseDate, 'DAILY');
       expect(
         doesEventOccurOnDate(
@@ -77,19 +76,17 @@ describe('Dashboard.utils', () => {
       ).toBe(true);
     });
 
-    it('renvoie false si targetDate est avant startDate', () => {
+    it('should return false if targetDate is before startDate', () => {
       const ev = makeEvent(baseDate, 'DAILY');
       expect(doesEventOccurOnDate(ev, '2024-12-31', 'DAILY')).toBe(false);
     });
 
-    it('gère la récurrence DAILY', () => {
+    it('should handle the DAILY recurrence', () => {
       const ev = makeEvent(baseDate, 'DAILY');
-      // Test avec une date dans la séquence
       const target = addDays(baseDate, 3);
       expect(
         doesEventOccurOnDate(ev, target.toISOString().split('T')[0], 'DAILY'),
       ).toBe(true);
-      // Test avec une autre date dans la séquence
       const anotherDate = addDays(baseDate, 5);
       expect(
         doesEventOccurOnDate(
@@ -100,7 +97,7 @@ describe('Dashboard.utils', () => {
       ).toBe(true);
     });
 
-    it('gère la récurrence WEEKLY', () => {
+    it('should handle the WEEKLY recurrence', () => {
       const ev = makeEvent(baseDate, 'WEEKLY');
       const target = addWeeks(baseDate, 2);
       expect(
@@ -108,7 +105,7 @@ describe('Dashboard.utils', () => {
       ).toBe(true);
     });
 
-    it('gère la récurrence MONTHLY', () => {
+    it('should handle the MONTHLY recurrence', () => {
       const ev = makeEvent(baseDate, 'MONTHLY');
       const target = addMonths(baseDate, 1);
       expect(
@@ -116,15 +113,14 @@ describe('Dashboard.utils', () => {
       ).toBe(true);
     });
 
-    it('gère la récurrence QUARTERLY', () => {
+    it('should handle the QUARTERLY recurrence', () => {
       const ev = makeEvent(baseDate, 'QUARTERLY');
-      // Test avec exactement 3 mois plus tard
       const target = addMonths(baseDate, 3);
       const targetStr = format(target, 'yyyy-MM-dd');
       expect(doesEventOccurOnDate(ev, targetStr, 'QUARTERLY')).toBe(true);
     });
 
-    it('gère la récurrence YEARLY', () => {
+    it('should handle the YEARLY recurrence', () => {
       const ev = makeEvent(baseDate, 'YEARLY');
       const target = addYears(baseDate, 1);
       expect(
@@ -132,11 +128,10 @@ describe('Dashboard.utils', () => {
       ).toBe(true);
     });
 
-    it('renvoie false hors périmètre de dates (après endDate)', () => {
+    it('should return false outside the date range (after endDate)', () => {
       const start = baseDate;
       const end = addDays(baseDate, 2);
       const ev = makeEvent(start, 'DAILY', end);
-      // 5 jours après, hors endDate
       const afterEnd = addDays(baseDate, 5);
       expect(
         doesEventOccurOnDate(ev, afterEnd.toISOString().split('T')[0], 'DAILY'),
@@ -167,7 +162,7 @@ describe('Dashboard.utils', () => {
       { id: 'r2', frequency: 'WEEKLY' as Frequency },
     ];
 
-    it('marque la date sélectionnée en selected + grey', () => {
+    it('should mark the selected date as selected + grey', () => {
       const selected = '2025-01-10';
       const marked = generateMarkedDates([], recs, selected);
       expect(marked[selected]).toEqual({
@@ -176,7 +171,7 @@ describe('Dashboard.utils', () => {
       });
     });
 
-    it('ajoute un dotColor pour les événements récurrents', () => {
+    it('should add a dotColor for recurring events', () => {
       const start = new Date('2025-01-01');
       const end = addDays(start, 2);
       const ev1 = makeEvent(start, 'DAILY' as Frequency, '1', end);
@@ -186,7 +181,6 @@ describe('Dashboard.utils', () => {
 
       const marked = generateMarkedDates([ev1], testRecs, '2025-01-01');
 
-      // Vérifions seulement la date sélectionnée
       expect(marked['2025-01-01']).toBeDefined();
       expect(marked['2025-01-01'].selected).toBe(true);
       expect(marked['2025-01-01'].selectedColor).toBe('grey');
