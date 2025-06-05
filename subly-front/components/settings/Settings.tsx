@@ -34,6 +34,9 @@ const Settings = () => {
     );
   };
 
+  const handleClickCgu = () => {
+    router.push('/cgu');
+  };
   return (
     <SafeAreaView className="bg-[#121212] h-full">
       <Text className="text-white text-2xl font-bold text-center">Profil</Text>
@@ -48,9 +51,11 @@ const Settings = () => {
         </Text>
       </Pressable>
 
-      <Text className="text-white text-center">
-        Conditions et termes d'utilisation
-      </Text>
+      <Pressable onPress={handleClickCgu}>
+        <Text className="text-white text-center">
+          Conditions et termes d'utilisation
+        </Text>
+      </Pressable>
     </SafeAreaView>
   );
 };
