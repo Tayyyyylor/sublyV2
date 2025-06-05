@@ -15,7 +15,6 @@ jest.mock('axios', () => {
   };
 });
 
-
 describe('axiosInstance', () => {
   let requestInterceptor: Function;
 
@@ -41,7 +40,7 @@ describe('axiosInstance', () => {
     expect(SecureStore.getItemAsync).toHaveBeenCalledWith('session');
   });
 
-  it("should not add the Authorization header if no token is present", async () => {
+  it('should not add the Authorization header if no token is present', async () => {
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
 
     const testConfig = { headers: {} };
