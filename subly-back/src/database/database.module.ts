@@ -1,19 +1,44 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT || '5432', 10),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      autoLoadEntities: true,
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = config.get<string>('DATABASE_URL');
+
+        if (databaseUrl) {
+          // Railway (production)
+          return {
+            type: 'postgres',
+            url: databaseUrl,
+            ssl: {
+              rejectUnauthorized: false, // requis pour Railway
+            },
+            autoLoadEntities: true,
+            synchronize: true,
+          };
+        }
+
+        // Environnement local (Docker, etc.)
+        return {
+          type: 'postgres',
+          host: config.get('DATABASE_HOST'),
+          port: parseInt(config.get('DATABASE_PORT') || '5432', 10),
+          username: config.get('DATABASE_USER'),
+          password: config.get('DATABASE_PASSWORD'),
+          database: config.get('DATABASE_NAME'),
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
     }),
   ],
 })
