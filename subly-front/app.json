@@ -10,7 +10,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "usesAppleSignIn": true
+      "usesAppleSignIn": true,
+      "bundleIdentifier": "com.tayyyyylor.sublyfront",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,6 +46,17 @@
     },
     "runtimeVersion": {
       "policy": "appVersion"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f159920b-5f67-42e1-a1cb-63c1eeacb4f3"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f159920b-5f67-42e1-a1cb-63c1eeacb4f3"
     }
   }
 }
