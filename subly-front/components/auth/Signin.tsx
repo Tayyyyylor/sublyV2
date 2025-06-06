@@ -39,7 +39,7 @@ const Signin = () => {
 
     try {
       const userData = {
-        email,
+        email: email.toLowerCase(),
         password,
       };
       await loginUser(userData, signIn);
