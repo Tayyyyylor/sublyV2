@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import DefaultButton from '../DefaultButton';
 import { useRouter } from 'expo-router';
 
 const Cgu = () => {
@@ -9,7 +8,7 @@ const Cgu = () => {
     {
       title: '1. INTRODUCTION',
       content:
-        'SubFlow accorde une importance primordiale à la protection de votre vie privée. Cette politique de confidentialité vise à vous informer de nos pratiques concernant la gestion de vos données.',
+        'Subly accorde une importance primordiale à la protection de votre vie privée. Cette politique de confidentialité vise à vous informer de nos pratiques concernant la gestion de vos données.',
     },
     {
       title: '2. STOCKAGE LOCAL DES DONNÉES',
