@@ -1,20 +1,16 @@
 jest.mock('expo-font', () => ({
-  // isLoaded sera appelé par @expo/vector-icons, on renvoie toujours true
   isLoaded: () => true,
   loadAsync: jest.fn(),
 }));
 
-// 2. On moque @expo/vector-icons pour que tous les Icons soient des composants vides
 jest.mock('@expo/vector-icons', () => {
   return {
-    // Si votre Input importe Ionicons (ou un autre jeu d’icônes), on retourne juste un composant null
     Ionicons: () => null,
     MaterialIcons: () => null,
     createIconSet: () => () => null,
   };
 });
 
-// 3. On moque les autres dépendances comme précédemment
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import { Alert } from 'react-native';
@@ -50,7 +46,7 @@ describe('Composant <Signin />', () => {
     (authService.loginUser as jest.Mock) = mockLoginUser;
   });
 
-  it('affiche les champs email, mot de passe et le bouton', () => {
+  it('should display the correct labels and text and button', () => {
     const { getByPlaceholderText, getByText } = render(<Signin />);
     expect(getByPlaceholderText('email')).toBeTruthy();
     expect(getByPlaceholderText('Mot de passe')).toBeTruthy();
@@ -59,7 +55,7 @@ describe('Composant <Signin />', () => {
     expect(getByText('Créer un compte')).toBeTruthy();
   });
 
-  it('alert si on clique Se connecter sans remplir', async () => {
+  it('should call alert if the user clicks on the "Se connecter" button without filling in the fields', async () => {
     const { getByText } = render(<Signin />);
     fireEvent.press(getByText('Se connecter'));
 
@@ -73,7 +69,7 @@ describe('Composant <Signin />', () => {
     expect(mockReplace).not.toHaveBeenCalled();
   });
 
-  it('appelle loginUser et navigue en cas de succès', async () => {
+  it('should call loginUser and navigate to the dashboard if the user fills in the fields and clicks on the "Se connecter" button', async () => {
     mockLoginUser.mockResolvedValueOnce({});
     const { getByPlaceholderText, getByText } = render(<Signin />);
 
@@ -91,7 +87,7 @@ describe('Composant <Signin />', () => {
     expect(alertMock).not.toHaveBeenCalled();
   });
 
-  it('alert en cas d’erreur loginUser', async () => {
+  it('should call alert if the user fills in the fields and clicks on the "Se connecter" button and the loginUser fails', async () => {
     mockLoginUser.mockRejectedValueOnce(new Error('échec'));
     const { getByPlaceholderText, getByText } = render(<Signin />);
 
@@ -108,7 +104,7 @@ describe('Composant <Signin />', () => {
     });
   });
 
-  it('navigate vers signup quand on clique sur le second bouton', () => {
+  it('should navigate to the signup page if the user clicks on the "Créer un compte" button', () => {
     const { getByText } = render(<Signin />);
     fireEvent.press(getByText('Créer un compte'));
     expect(mockReplace).toHaveBeenCalledWith('/signup');

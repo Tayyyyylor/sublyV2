@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 // src/recurrence/recurrence.integration.spec.ts
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -61,7 +62,6 @@ describe('Recurrence Integration (GET endpoints)', () => {
       getRepositoryToken(Recurrence),
     );
 
-    // Créer un utilisateur de test et hacher son mot de passe
     const hashed = await bcrypt.hash('password123!', 10);
     await userRepo.save(
       userRepo.create({
@@ -71,14 +71,12 @@ describe('Recurrence Integration (GET endpoints)', () => {
       }),
     );
 
-    // Login pour obtenir le JWT
     const loginResponse = await request(app.getHttpServer())
       .post('/auth/login')
       .send({ email: 'test@example.com', password: 'password123!' })
       .expect(200);
     jwtToken = (loginResponse.body as LoginResponse).access_token;
 
-    // Seed de quelques recurrences
     const recs = [
       {
         frequency: Frequency.DAILY,
@@ -107,7 +105,6 @@ describe('Recurrence Integration (GET endpoints)', () => {
       expect(Array.isArray(res.body)).toBe(true);
       expect(res.body).toHaveLength(3);
 
-      // Chaque objet doit posséder id et frequency
       (res.body as RecurrenceResponse[]).forEach((rec) => {
         expect(rec).toHaveProperty('id');
         expect(rec).toHaveProperty('frequency');
