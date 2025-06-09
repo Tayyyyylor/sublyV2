@@ -12,9 +12,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
+        const nodeEnv = config.get<string>('NODE_ENV');
         const databaseUrl = config.get<string>('DATABASE_URL');
 
-        if (databaseUrl) {
+        console.log('database config values', {
+          host: config.get<string>('DATABASE_HOST'),
+          port: config.get<string>('DATABASE_PORT'),
+          username: config.get<string>('DATABASE_USER'),
+          password: config.get<string>('DATABASE_PASSWORD'),
+          database: config.get<string>('DATABASE_NAME'),
+        });
+        console.log('NODE_ENV:', process.env.NODE_ENV);
+        if (nodeEnv === 'production' && databaseUrl) {
           // Railway (production)
           return {
             type: 'postgres',
@@ -30,11 +39,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         // Environnement local (Docker, etc.)
         return {
           type: 'postgres',
-          host: config.get('DATABASE_HOST'),
-          port: parseInt(config.get('DATABASE_PORT') || '5432', 10),
-          username: config.get('DATABASE_USER'),
-          password: config.get('DATABASE_PASSWORD'),
-          database: config.get('DATABASE_NAME'),
+          host: config.get<string>('DATABASE_HOST'),
+          port: parseInt(config.get<string>('DATABASE_PORT') || '5432', 10),
+          username: config.get<string>('DATABASE_USER'),
+          password: config.get<string>('DATABASE_PASSWORD'),
+          database: config.get<string>('DATABASE_NAME'),
           autoLoadEntities: true,
           synchronize: true,
         };

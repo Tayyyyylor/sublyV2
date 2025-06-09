@@ -1,5 +1,4 @@
 services:
-  # ========== Base PostgreSQL ==========
   db:
     image: postgres:15-alpine
     container_name: subly_db
@@ -14,7 +13,6 @@ services:
     networks:
       - subly-network
 
-  # ========== Backend NestJS ==========
   backend:
     build:
       context: ./subly-back
@@ -23,13 +21,11 @@ services:
     ports:
       - "${BACKEND_PORT}:${BACKEND_PORT}"
     environment:
-      # Exemple : variables d'environnement à injecter
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
       DATABASE_USER: ${DATABASE_USER}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_NAME: ${DATABASE_NAME}
-      NODE_ENV: production
     depends_on:
       - db
     networks:
