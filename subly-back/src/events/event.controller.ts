@@ -16,13 +16,14 @@ import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../users/user.entity';
 
 @Controller('events')
+@UseGuards(JwtAuthGuard)
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.eventsService.findAll();
+  findAll(@GetUser() user: User) {
+    return this.eventsService.findAllByUserId(user.id);
   }
 
   @UseGuards(JwtAuthGuard)

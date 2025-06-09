@@ -26,8 +26,13 @@ export class EventsService {
     });
   }
 
-  findAll() {
-    return this.eventsRepository.find();
+  async findAllByUserId(userId: string) {
+    const events = await this.eventsRepository.find({ where: { userId } });
+    if (!events) {
+      throw new NotFoundException('Événements introuvables');
+    }
+
+    return events;
   }
 
   async findOneById(id: string): Promise<Event> {
