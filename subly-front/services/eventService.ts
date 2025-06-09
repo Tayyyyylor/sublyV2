@@ -85,3 +85,13 @@ export const deleteEvent = async (id: string) => {
     throw error;
   }
 };
+
+export const getStatsByMonth = async () => {
+  try {
+    const response = await axiosInstance.delete('/events/stats');
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'évènement :", error);
+    throw error;
+  }
+};

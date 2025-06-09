@@ -1,5 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { SafeAreaView, Text, View, Pressable, Alert } from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  View,
+  Pressable,
+  Alert,
+  ScrollView,
+} from 'react-native';
 import {
   format,
   addMonths,
@@ -14,11 +21,17 @@ import { fr } from 'date-fns/locale';
 import { getAllEvent } from '@/services/eventService';
 import { getAllRecurrences } from '@/services/recurrenceService';
 import { EventType, RecurrenceType } from '@/types/global';
+import { getBalancePieData, getPieChartData } from './Stats.utils';
+import { PieChart } from 'react-native-gifted-charts';
+import ToggleTabs from '../ToggleTabs';
 
 const Stats = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [allEvents, setAllEvents] = useState<EventType[]>([]);
   const [allRecurrences, setAllRecurrences] = useState<RecurrenceType[]>([]);
+  const [selectedTab, setSelectedTab] = useState<'EXPENSE' | 'INCOME'>(
+    'EXPENSE',
+  );
 
   const handlePreviousMonth = () => {
     setCurrentMonth((prev) => subMonths(prev, 1));
@@ -127,7 +140,18 @@ const Stats = () => {
     console.log('Changement de mois:', format(currentMonth, 'yyyy-MM-dd'));
   }, [currentMonth]);
 
-  console.log("Nombre d'événements trouvés:", currentMonthEvents.length);
+  const pieData = useMemo(
+    () => getPieChartData(currentMonthEvents, selectedTab),
+    [currentMonthEvents, selectedTab],
+  );
+  const total = useMemo(() => {
+    return pieData.reduce((sum, item) => sum + item.value, 0);
+  }, [pieData]);
+
+  const balancePieData = useMemo(
+    () => getBalancePieData(currentMonthEvents),
+    [currentMonthEvents],
+  );
 
   return (
     <SafeAreaView className="bg-[#121212] h-full px-4">
@@ -146,23 +170,61 @@ const Stats = () => {
           <Text className="text-white text-xl">→</Text>
         </Pressable>
       </View>
-
-      {/* Liste des événements */}
-      <View className="flex-1">
-        {currentMonthEvents.map((event) => (
-          <View key={event.id} className="bg-gray-800 p-4 rounded-lg mb-3">
-            <View className="flex-row justify-between items-center">
-              <Text className="text-white text-lg">{event.name}</Text>
-              <Text
-                className={`text-lg font-bold ${event.type === 'EXPENSE' ? 'text-red-500' : 'text-green-500'}`}
-              >
-                {event.type === 'EXPENSE' ? '-' : '+'}
-                {event.amount}€
-              </Text>
+      <ScrollView>
+        <View className="items-center my-6">
+          <Text className="text-white text-lg font-semibold mb-2">
+            Balance globale
+          </Text>
+          <PieChart
+            data={balancePieData}
+            textColor="white"
+            innerRadius={60}
+            radius={100}
+            focusOnPress
+          />
+        </View>
+        <View className="mt-4 space-y-2">
+          {balancePieData.map((item, index) => (
+            <View key={index} className="flex-row items-center space-x-2">
+              <View
+                style={{ backgroundColor: item.color }}
+                className="w-4 h-4 rounded-full"
+              />
+              <Text className="text-white">{item.text}</Text>
             </View>
-          </View>
-        ))}
-      </View>
+          ))}
+        </View>
+        <ToggleTabs selected={selectedTab} onSelect={setSelectedTab} />
+        <View className="items-center mb-6">
+          <PieChart
+            data={pieData}
+            donut
+            showText
+            innerRadius={60}
+            radius={100}
+            focusOnPress
+            centerLabelComponent={() => (
+              <View className="items-center">
+                <Text className="text-black text-sm">Total</Text>
+                <Text className="text-black text-lg font-bold">
+                  {total.toFixed(2)} €
+                </Text>
+              </View>
+            )}
+          />
+        </View>
+        <View className="mt-4 space-y-2">
+          {pieData.map((item, index) => (
+            <View key={index} className="flex-row items-center space-x-2">
+              <View
+                style={{ backgroundColor: item.color }}
+                className="w-4 h-4 rounded-full"
+              />
+              <Text className="text-white">{item.label}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

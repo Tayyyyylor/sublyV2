@@ -22,8 +22,6 @@ const Settings = () => {
     user?.username as string,
   );
 
-  console.log('user', user);
-
   const handleDelete = () => {
     Alert.alert(
       'Confirmation',
@@ -54,8 +52,8 @@ const Settings = () => {
   const handleClickCgu = () => {
     router.push('/cgu');
   };
-  const handleClickEditName = () => {
-    setIsEditing(true);
+  const handleClickConfidentiality = () => {
+    router.push('/confidentiality');
   };
 
   const handleSave = async () => {
@@ -73,43 +71,46 @@ const Settings = () => {
     }
   };
   return (
-    <SafeAreaView className="bg-[#121212] h-full">
-      <Text className="text-white text-2xl font-bold text-center">Profil</Text>
-
-      <Text className="text-white text-[16px] text-center"> Infos</Text>
-
-      <View className="flex-row items-center justify-center">
+    <SafeAreaView className="bg-[#121212] h-full flex-column justify-between">
+      <View className="flex-column items-center justify-center mt-[20px]">
         {isEditing ? (
-          <View className="flex-column items-center justify-center w-full">
+          <View className="flex-column items-center justify-center w-full ">
             <Input value={username} onChangeText={setUsername} />
             <Button title="Enregistrer" onPress={handleSave} />
           </View>
         ) : (
           <>
-            <Text className="text-white text-[20px] font-bold capitalize mr-2">
+            <Text className="text-white text-[30px] font-bold capitalize mr-2">
               {user?.username}
             </Text>
-            <Pressable onPress={handleClickEditName}>
+            {/* <Pressable onPress={handleClickEditName}>
               <AntDesign name="edit" size={20} color="white" />
-            </Pressable>
+            </Pressable> */}
           </>
         )}
+        <Button title="Se déconnecter" color="red" onPress={signOut} />
       </View>
-      <Button title="Se déconnecter" color="red" onPress={signOut} />
-      <Pressable
-        className="bg-red-500 p-4 rounded-[5px] mt-6"
-        onPress={handleDelete}
-      >
-        <Text className="text-white text-center text-[18px] font-bold">
-          Supprimer le compte
-        </Text>
-      </Pressable>
+      <View className="p-4">
+        <Pressable
+          className="bg-red-500 p-4 rounded-[5px] mt-6"
+          onPress={handleDelete}
+        >
+          <Text className="text-white text-center text-[18px] font-bold">
+            Supprimer le compte
+          </Text>
+        </Pressable>
 
-      <Pressable onPress={handleClickCgu}>
-        <Text className="text-white text-center">
-          Conditions et termes d'utilisation
-        </Text>
-      </Pressable>
+        <Pressable onPress={handleClickCgu}>
+          <Text className="text-white text-center mt-5">
+            Conditions générales d'utilisation
+          </Text>
+        </Pressable>
+        <Pressable onPress={handleClickConfidentiality}>
+          <Text className="text-white text-center mt-5">
+            Politique de confidentialité
+          </Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 };
