@@ -15,14 +15,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         const nodeEnv = config.get<string>('NODE_ENV');
         const databaseUrl = config.get<string>('DATABASE_URL');
 
-        console.log('database config values', {
-          host: config.get<string>('DATABASE_HOST'),
-          port: config.get<string>('DATABASE_PORT'),
-          username: config.get<string>('DATABASE_USER'),
-          password: config.get<string>('DATABASE_PASSWORD'),
-          database: config.get<string>('DATABASE_NAME'),
-        });
-        console.log('NODE_ENV:', process.env.NODE_ENV);
         if (nodeEnv === 'production' && databaseUrl) {
           // Railway (production)
           return {

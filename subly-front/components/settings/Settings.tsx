@@ -22,8 +22,6 @@ const Settings = () => {
     user?.username as string,
   );
 
-  console.log('user', user);
-
   const handleDelete = () => {
     Alert.alert(
       'Confirmation',
@@ -54,8 +52,8 @@ const Settings = () => {
   const handleClickCgu = () => {
     router.push('/cgu');
   };
-  const handleClickEditName = () => {
-    setIsEditing(true);
+  const handleClickConfidentiality = () => {
+    router.push('/confidentiality');
   };
 
   const handleSave = async () => {
@@ -104,7 +102,12 @@ const Settings = () => {
 
         <Pressable onPress={handleClickCgu}>
           <Text className="text-white text-center mt-5">
-            Conditions et termes d'utilisation
+            Conditions générales d'utilisation
+          </Text>
+        </Pressable>
+        <Pressable onPress={handleClickConfidentiality}>
+          <Text className="text-white text-center mt-5">
+            Politique de confidentialité
           </Text>
         </Pressable>
       </View>
