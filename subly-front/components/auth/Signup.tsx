@@ -20,6 +20,7 @@ const Signup = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmError, setConfirmError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const inputData = [
     { placeholder: 'Prénom', value: username, onChangeText: setUsername },
@@ -39,8 +40,8 @@ const Signup = () => {
       onChangeText: setVerifyPassword,
       id: 'password',
       secureTextEntry: !showPassword,
-      showPassword,
-      togglePassword: () => setShowPassword(!showPassword),
+      showPassword: showConfirmPassword,
+      togglePassword: () => setShowConfirmPassword(!showConfirmPassword),
     },
   ];
 
