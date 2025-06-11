@@ -23,6 +23,7 @@ const ToggleTabs = ({ selected, onSelect }: ToggleTabsProps) => {
             }
           >
             {type === 'EXPENSE' ? 'Dépenses' : 'Revenus'}
+            on change pleins de truuuuucs 
           </Text>
         </Pressable>
       ))}
