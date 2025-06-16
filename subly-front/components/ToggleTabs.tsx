@@ -22,7 +22,7 @@ const ToggleTabs = ({ selected, onSelect }: ToggleTabsProps) => {
               selected === type ? 'text-black font-bold' : 'text-white'
             }
           >
-            {type === 'EXPENSE' ? 'Dépenses' : 'Revenus'}
+            {type === 'EXPENSE' ? 'Dépenss' : 'Revens'}
             on change pleins de truuuuucs 
           </Text>
         </Pressable>
