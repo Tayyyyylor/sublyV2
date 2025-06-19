@@ -141,24 +141,6 @@ export const generateMarkedDates = (
         case 'YEARLY':
           currentDate = addYears(currentDate, 1);
           break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
-        case 'YEARLY':
-          currentDate = addYears(currentDate, 1);
-          break;
       }
     }
   });
